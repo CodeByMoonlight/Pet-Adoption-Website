@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-:root {
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -23,4 +23,251 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+} */
+
+/* 1. Use a more-intuitive box-sizing model */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+* {
+  margin: 0;
+}
+
+/* 3. Enable keyword animations */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+body {
+  /* 4. Add accessible line-height */
+  line-height: 1.5;
+  /* 5. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 6. Improve media defaults */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 7. Inherit fonts for form controls */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* 8. Avoid text overflows */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+  color: #1e2939;
+}
+
+label {
+  color: #1e2939;
+}
+
+/* 9. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+/*
+  10. Create a root stacking context
+*/
+#root, #__next {
+  isolation: isolate;
+}
+
+/*Custom Styling*/
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modalSlideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+}
+
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; 
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal.modal-closing {
+  animation: fadeOut 0.3s ease-out;
+}
+
+.pet-modal-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  padding: 24px;
+  border-radius: 24px;
+  background-color: #FFFFFF;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 3px solid #e5e7eb;
+  width: 720px;
+  max-width: 720px;
+  min-width: 320px;
+  justify-self: center;
+  align-self: center;
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+.pet-modal-container.modal-content-closing {
+  animation: modalSlideDown 0.3s ease-out;
+}
+
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  border-radius: 24px;
+  background-color: #FFFFFF;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 3px solid #e5e7eb;
+  width: 424px;
+  max-width: 424px;
+  min-width: 320px;
+  justify-self: center;
+  align-self: center;
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+.modal-container.modal-content-closing {
+  animation: modalSlideDown 0.3s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+
+  .close-btn {
+    color: #1e2939;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+
+  .close-btn:hover {
+    background-color: #f0f0f0;
+    scale: 1.05;
+  }
+
+  button {
+    min-width: 32px;
+    min-height: 32px;
+    justify-items: end;
+  }
+}
+
+  .close-btn {
+    color: #1e2939;
+    cursor: pointer;
+    border-radius: 24px;
+  }
+
+  .close-btn:hover {
+    background-color: #f0f0f0;
+  }
+
+.modal-form {
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+
+  button {
+    background-color: #F94F46;
+    color: #FFFFFF;
+    padding: 8px;
+    border-radius: 24px;
+    margin-top: 12px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #fa281d;
+  }
+}
+
+.input-group-div {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  width: 100%;
+
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  gap: 4px;
+  width: 100%;
+
+  label {
+    font-weight: 400;
+  }
+
+  textarea {
+    height: 80px;
+    resize: none;
+  }
+
+  input, textarea {
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 12px;
+    width: 100%;
+  }
 }

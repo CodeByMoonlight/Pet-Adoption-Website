@@ -1,0 +1,179 @@
+'use client';
+
+import { IoIosClose } from 'react-icons/io';
+import Image from 'next/image';
+import { AiFillHeart } from 'react-icons/ai';
+import { AiOutlineHeart } from 'react-icons/ai';
+import { useState, useEffect } from 'react';
+
+type Pet = {
+    id: number;
+    name: string;
+    breed: string;
+    sex: string;
+    age: number;
+    location: string;
+    description: string;
+    image: string;
+    traits: string;
+    primaryCol: string;
+    accentCol: string;
+    isLiked?: boolean;
+};
+
+type ViewModalProps = {
+    pet: Pet;
+    onClose?: () => void;
+    onPetUpdate?: (updatedPet: Pet) => void;
+    onAdopt?: () => void;
+};
+
+export default function ViewPetModal({
+    pet,
+    onClose,
+    onPetUpdate,
+    onAdopt,
+}: ViewModalProps) {
+    const [isLiked, setIsLiked] = useState(pet.isLiked || false);
+    const [isHovered, setIsHovered] = useState(false);
+
+    // Reset isLiked when pet changes
+    useEffect(() => {
+        setIsLiked(pet.isLiked || false);
+    }, [pet.id, pet.isLiked]);
+
+    const handleClose = () => {
+        onClose?.();
+    };
+
+    const handleLikeToggle = async () => {
+        const newLikedState = !isLiked;
+        setIsLiked(newLikedState);
+
+        try {
+            const response = await fetch('/api/pets', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: pet.id,
+                    isLiked: newLikedState,
+                }),
+            });
+
+            if (!response.ok) {
+                // Revert on error
+                setIsLiked(!newLikedState);
+                console.error('Failed to update liked status');
+            } else {
+                // Update parent component's state
+                const updatedPet = await response.json();
+                onPetUpdate?.(updatedPet);
+            }
+        } catch (error) {
+            // Revert on error
+            setIsLiked(!newLikedState);
+            console.error('Error updating liked status:', error);
+        }
+    };
+
+    const traits: string[] = Array.isArray(pet.traits)
+        ? pet.traits
+        : typeof pet.traits === 'string'
+          ? pet.traits
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean)
+          : [];
+
+    return (
+        <div className="modal" onClick={handleClose}>
+            <div
+                className="pet-modal-container"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className="relative w-1/2 overflow-hidden rounded-lg">
+                    <Image
+                        src={pet.image}
+                        alt={pet.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover object-center"
+                        priority
+                    />
+                </div>
+                <div className="flex w-1/2 flex-col gap-4">
+                    <div className="modal-header">
+                        <div className="">
+                            <div className="flex flex-row items-center gap-2">
+                                <h1 className="pb-1 text-4xl font-bold">
+                                    {pet.name}
+                                </h1>
+                                <button
+                                    onClick={handleLikeToggle}
+                                    onMouseEnter={() => setIsHovered(true)}
+                                    onMouseLeave={() => setIsHovered(false)}
+                                    className="transition-transform hover:scale-110"
+                                >
+                                    {isLiked || isHovered ? (
+                                        <AiFillHeart className="h-8 w-8 rounded-lg bg-red-100 p-1 text-red-400 transition-colors" />
+                                    ) : (
+                                        <AiOutlineHeart className="h-8 w-8 rounded-lg bg-red-100 p-1 text-red-400 transition-colors" />
+                                    )}
+                                </button>
+                            </div>
+
+                            <div className="text-sm text-gray-400">
+                                <span>{pet.breed}</span>
+                                <span> | </span>
+                                <span>{pet.sex}</span>
+                                <span> | </span>
+                                <span>{pet.age} years old</span>
+                                <span> | </span>
+                                <span>{pet.location}</span>
+                            </div>
+                        </div>
+                        <button className="" onClick={handleClose}>
+                            <IoIosClose className="close-btn h-8 w-8" />
+                        </button>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-1">
+                            <h2 className="text-xl font-bold">ABOUT</h2>
+                            <p className="text-sm leading-normal">
+                                {pet.description}
+                            </p>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <h2 className="text-xl font-bold">PERSONALITY</h2>
+                            <div className="flex flex-wrap gap-2">
+                                {traits.map((trait, index) => (
+                                    <span
+                                        key={`${trait}-${index}`}
+                                        className="rounded-full px-3 py-2 text-xs"
+                                        style={{
+                                            backgroundColor: pet.accentCol,
+                                            color: pet.primaryCol,
+                                        }}
+                                    >
+                                        {trait}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => {
+                            handleClose();
+                            onAdopt?.();
+                        }}
+                        className="w-full cursor-pointer rounded-3xl bg-[#F94F46] p-2 text-[#FFFFFF] hover:bg-[#fa281d]"
+                    >
+                        Adopt {pet.name}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}

@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Pet {
+  id          Int      @id @default(autoincrement())
+  name        String
+  breed       String
+  sex         String
+  age         Int
+  location    String
+  description String?
+  image       String?
+  traits      String?
+  primaryCol  String
+  accentCol   String
+  isLiked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model Adopt {
+  id          Int      @id @default(autoincrement())
+  petId       Int
+  name        String
+  address     String
+  email       String
+  phoneNo     String
+  reason      String?
+  createdAt   DateTime @default(now())
+}
+
+model Review {
+  id          Int      @id @default(autoincrement())
+  name        String
+  petName     String
+  img         String
+  rating      Int
+  review      String?
+  createdAt   DateTime @default(now())
+}
