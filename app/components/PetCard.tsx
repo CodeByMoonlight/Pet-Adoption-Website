@@ -1,6 +1,9 @@
 'use client';
 
 import { IoPaw } from 'react-icons/io5';
+import { FiEdit } from 'react-icons/fi';
+import { FaRegTrashAlt } from 'react-icons/fa';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 
 type Pet = {
@@ -20,9 +23,14 @@ type Pet = {
 type PetCardProps = {
     pet: Pet;
     onClick?: () => void;
+    onEdit?: () => void;
+    onDelete?: () => void;
 };
 
-function PetCard({ pet, onClick }: PetCardProps) {
+function PetCard({ pet, onClick, onEdit, onDelete }: PetCardProps) {
+    const pathname = usePathname();
+    const isAdmin = pathname.includes('/admin');
+
     const traits: string[] = Array.isArray(pet.traits)
         ? pet.traits
         : typeof pet.traits === 'string'
@@ -34,7 +42,7 @@ function PetCard({ pet, onClick }: PetCardProps) {
 
     return (
         <div
-            className="flex min-h-[372px] w-72 cursor-pointer flex-col justify-between rounded-xl border-3 border-gray-200 p-4 duration-300 hover:scale-105 hover:shadow-lg"
+            className="flex min-h-[372px] w-72 cursor-pointer flex-col justify-between rounded-xl border-3 border-gray-200 bg-white p-4 duration-300 hover:scale-105 hover:shadow-lg"
             onClick={onClick}
         >
             <div className="relative min-h-38 w-full overflow-hidden rounded-lg">
@@ -47,18 +55,50 @@ function PetCard({ pet, onClick }: PetCardProps) {
                     priority
                 />
             </div>
-            <div className="flex flex-row items-center justify-between pt-2">
-                <div>
-                    <h1 className="text-2xl font-bold">{pet.name}</h1>
+            <div className="flex flex-row items-center justify-between">
+                <div className="w-full">
+                    <div className="flex flex-row justify-between">
+                        <h1 className="text-2xl font-bold">{pet.name}</h1>
+                        {isAdmin && (
+                            <div className="flex flex-row gap-2">
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onEdit?.();
+                                    }}
+                                    className=""
+                                    aria-label="Edit"
+                                >
+                                    <FiEdit className="h-6 w-6 cursor-pointer rounded-sm p-1 text-blue-900 hover:bg-blue-200" />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onDelete?.();
+                                    }}
+                                    className=""
+                                    aria-label="Delete"
+                                >
+                                    <FaRegTrashAlt className="h-6 w-6 cursor-pointer rounded-sm p-1 text-red-900 hover:bg-red-200" />
+                                </button>
+                            </div>
+                        )}
+                    </div>
                     <h2 className="text-sm text-gray-400">{pet.breed}</h2>
                 </div>
-                <IoPaw
-                    className="h-8 w-8 rounded-lg p-1"
-                    style={{
-                        backgroundColor: pet.accentCol,
-                        color: pet.primaryCol,
-                    }}
-                />
+                {!isAdmin && (
+                    <span className="min-h-fit min-w-fit">
+                        <IoPaw
+                            className="h-8 w-8 rounded-lg p-1"
+                            style={{
+                                backgroundColor: pet.accentCol,
+                                color: pet.primaryCol,
+                            }}
+                        />
+                    </span>
+                )}
             </div>
             <p className="h-[64px] overflow-hidden text-sm leading-normal">
                 {pet.description}

@@ -11,6 +11,9 @@ import ViewPetModal from './components/ViewPetModal';
 import { useEffect, useState } from 'react';
 import { Adopt } from '@prisma/client';
 import ThankYouModal from './components/ThankYouModal';
+import { ConfettiFireworks } from '@/components/ui/confetti';
+import { IoPaw } from 'react-icons/io5';
+import { FaGithub } from 'react-icons/fa';
 
 type Pet = {
     id: number;
@@ -47,7 +50,40 @@ export default function Home() {
     const [openReviewModal, setOpenReviewModal] = useState(false);
     const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
     const [adoptedData, setAdoptedData] = useState<Adopt[]>([]);
-    const [openThankYouModal, setopenThankYouModal] = useState(false);
+    const [openThankYouModal, setOpenThankYouModal] = useState(false);
+    const [activeSection, setActiveSection] = useState('home');
+
+    // Show/hide navbar on scroll and track active section
+    const [showNavbar, setShowNavbar] = useState(true);
+    useEffect(() => {
+        let lastScrollY = window.scrollY;
+        const handleScroll = () => {
+            if (window.scrollY > lastScrollY) {
+                setShowNavbar(false);
+            } else {
+                setShowNavbar(true);
+            }
+            lastScrollY = window.scrollY;
+
+            // Track active section based on scroll position
+            const sections = ['home', 'pets', 'about', 'reviews'];
+            const sectionElements = sections
+                .map((section) => document.getElementById(section))
+                .filter(Boolean);
+
+            let currentSection = 'home';
+            for (let i = sectionElements.length - 1; i >= 0; i--) {
+                const element = sectionElements[i];
+                if (element && element.offsetTop <= window.scrollY + 200) {
+                    currentSection = sections[i];
+                    break;
+                }
+            }
+            setActiveSection(currentSection);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     useEffect(() => {
         const fetchPets = async () => {
@@ -122,52 +158,309 @@ export default function Home() {
 
     const handleAdoptSuccess = () => {
         setOpenAdoptModal(false);
-        setopenThankYouModal(true);
+        setOpenThankYouModal(true);
         refreshPets(); // Refresh the pets list to remove the adopted pet
+    };
+
+    // Scroll to section function
+    const scrollToSection = (sectionId: string) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    // Scroll to top function
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Handle pet delete with confirmation
+    const handlePetDelete = async (petId: number, petName: string) => {
+        const confirmed = window.confirm(
+            `Are you sure you want to delete ${petName}? This action cannot be undone.`,
+        );
+        if (confirmed) {
+            await fetch('/api/pets', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: petId }),
+            });
+            refreshPets();
+        }
     };
 
     return (
         <div>
-            <main className="flex flex-row gap-6">
-                {/* Pet Cards*/}
-                {pets.map((pet) => (
-                    <PetCard
-                        key={pet.id}
-                        pet={pet}
-                        onClick={() => {
-                            setSelectedPet(pet);
-                            setOpenViewPetModal(true);
-                        }}
+            <nav
+                className={`fixed top-0 right-0 left-0 z-10 mx-5! flex flex-row items-center justify-between rounded-2xl bg-white/60 p-3 backdrop-blur-sm transition-transform duration-300 ${showNavbar ? 'translate-y-5' : '-translate-y-full'}`}
+            >
+                <div
+                    className="flex w-44 flex-row items-center gap-2 hover:cursor-pointer"
+                    onClick={scrollToTop}
+                >
+                    <IoPaw className="h-8 w-8 p-1 text-gray-800" />
+                    <p className="text-xl font-bold">FurEverHome</p>
+                </div>
+                <div className="flex flex-row gap-8">
+                    <span
+                        className={`nav-item ${activeSection === 'home' ? 'font-bold text-[#12585e]' : ''}`}
+                        onClick={() => scrollToSection('home')}
+                    >
+                        HOME
+                    </span>
+                    <span
+                        className={`nav-item ${activeSection === 'pets' ? 'font-bold text-[#12585e]' : ''}`}
+                        onClick={() => scrollToSection('pets')}
+                    >
+                        PETS
+                    </span>
+                    <span
+                        className={`nav-item ${activeSection === 'about' ? 'font-bold text-[#12585e]' : ''}`}
+                        onClick={() => scrollToSection('about')}
+                    >
+                        ABOUT
+                    </span>
+                    <span
+                        className={`nav-item ${activeSection === 'reviews' ? 'font-bold text-[#12585e]' : ''}`}
+                        onClick={() => scrollToSection('reviews')}
+                    >
+                        REVIEWS
+                    </span>
+                </div>
+                <div className="flex w-44 flex-row justify-end gap-2">
+                    <IoPaw className="icons" />
+                    <FaGithub className="icons" />
+                </div>
+            </nav>
+            <main className="flex flex-col items-center justify-center gap-36">
+                {/* Hero*/}
+                <div
+                    id="home"
+                    className="relative flex h-180 w-full flex-row items-center justify-center bg-[#FFF1E0] pb-24 pl-20"
+                >
+                    <img
+                        src="/images/transition.svg"
+                        alt="transition_img"
+                        className="absolute top-36 left-0 z-0 h-full w-full object-cover md:top-40 lg:top-46"
                     />
-                ))}
+                    <div className="relative z-10 w-164">
+                        <div className="flex flex-col gap-4">
+                            <h1 className="text-6xl font-bold">
+                                Together, We Can Give Every Animal a Place to
+                                Call Home
+                            </h1>
+                            <p className="text-xl">
+                                Behind every pair of hopeful eyes is a story
+                                ready to change your life. Discover pets looking
+                                for love and make your home a place filled with
+                                warmth, joy, and endless pawprints.
+                            </p>
+                        </div>
+                        <button className="btn">View Pets</button>
+                    </div>
+                    <div className="relative h-150 w-160">
+                        <Image
+                            src="/images/hero.gif"
+                            alt="hero"
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-contain"
+                            priority
+                        />
+                    </div>
+                </div>
 
-                {/* Review Cards*/}
-                {/* {reviews.slice(0, 3).map((review) => (
-                    <ReviewCard key={review.id} review={review} />
-                ))} */}
+                {/* Pet*/}
+                <div
+                    id="pets"
+                    className="flex flex-col items-center gap-8 pt-24"
+                >
+                    <div className="section-header">
+                        <div className="section-title">
+                            <IoPaw className="icons" />
+                            <h1>PETS</h1>
+                            <IoPaw className="icons" />
+                        </div>
+                        <p>
+                            Meet our wonderful pets! Each one has a unique charm
+                            and is ready to bring joy, warmth, and companionship
+                            into your life.
+                        </p>
+                    </div>
+                    <div className="flex max-w-360 flex-wrap justify-center gap-8">
+                        {pets.slice(0, 8).map((pet) => (
+                            <PetCard
+                                key={pet.id}
+                                pet={pet}
+                                onClick={() => {
+                                    setSelectedPet(pet);
+                                    setOpenViewPetModal(true);
+                                }}
+                                onEdit={() => {
+                                    setSelectedPet(pet);
+                                    setOpenUpdatePetModal(true);
+                                }}
+                                onDelete={() =>
+                                    handlePetDelete(pet.id, pet.name)
+                                }
+                            />
+                        ))}
+                    </div>
+                    <a href="/pets" className="btn">
+                        View More
+                    </a>
+                </div>
 
-                {/* Create Button */}
-                <button onClick={() => setOpenCreatePetModal(true)}>
-                    Add Pet
-                </button>
+                {/* About*/}
+                <div
+                    id="about"
+                    className="flex w-full flex-row items-center justify-center gap-12 bg-[#FFF1E0] py-8"
+                >
+                    <div className="section-header">
+                        <div className="section-title">
+                            <IoPaw className="icons" />
+                            <h1>ABOUT</h1>
+                            <IoPaw className="icons" />
+                        </div>
+                        <p>
+                            We’re more than just an adoption center, we’re a
+                            compassionate community built on love, care, and
+                            second chances. Together, we create a space where
+                            people and pets can connect, heal, and grow as
+                            family.
+                        </p>
+                        <button
+                            onClick={() => setOpenAdoptModal(true)}
+                            className="btn"
+                        >
+                            Adopt A Pet
+                        </button>
+                    </div>
+                    <div className="relative h-140 w-160">
+                        <Image
+                            src="/images/about.png"
+                            alt="about"
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-contain"
+                            priority
+                        />
+                    </div>
+                </div>
 
-                {/* Update Button */}
-                {/* {pets.slice(0, 3).map((pet) => (
-                    <PetCard
-                        key={pet.id}
-                        pet={pet}
-                        onClick={() => {
-                            setSelectedPet(pet);
-                            setOpenUpdatePetModal(true);
-                        }}
-                    />
-                ))} */}
+                {/* Review*/}
+                <div id="reviews" className="flex flex-col gap-8">
+                    <div className="section-header">
+                        <div className="section-title">
+                            <IoPaw className="icons" />
+                            <h1>REVIEWS</h1>
+                            <IoPaw className="icons" />
+                        </div>
+                        <p>
+                            Every adoption creates a story worth sharing. Here
+                            are a few of our favorites.
+                        </p>
+                    </div>
+                    <div className="flex max-w-381 flex-col gap-12 overflow-hidden pb-12">
+                        {/* First row - scrolls left */}
+                        <div className="carousel-row">
+                            <div className="carousel-left flex gap-8">
+                                {reviews.slice(0, 5).map((review) => (
+                                    <ReviewCard
+                                        key={review.id}
+                                        review={review}
+                                    />
+                                ))}
+                                {/* Duplicate for seamless loop */}
+                                {reviews.slice(0, 5).map((review) => (
+                                    <ReviewCard
+                                        key={`dup-1-${review.id}`}
+                                        review={review}
+                                    />
+                                ))}
+                                {/* Additional duplicate for seamless transition */}
+                                {reviews.slice(0, 5).map((review) => (
+                                    <ReviewCard
+                                        key={`dup-2-${review.id}`}
+                                        review={review}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                        {/* Second row - scrolls right */}
+                        <div className="carousel-row">
+                            <div className="carousel-right flex gap-8">
+                                {reviews.slice(5, 10).map((review) => (
+                                    <ReviewCard
+                                        key={review.id}
+                                        review={review}
+                                    />
+                                ))}
+                                {/* Duplicate for seamless loop */}
+                                {reviews.slice(5, 10).map((review) => (
+                                    <ReviewCard
+                                        key={`dup-1-${review.id}`}
+                                        review={review}
+                                    />
+                                ))}
+                                {/* Additional duplicate for seamless transition */}
+                                {reviews.slice(5, 10).map((review) => (
+                                    <ReviewCard
+                                        key={`dup-2-${review.id}`}
+                                        review={review}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                {/* Review Button */}
-                <button onClick={() => setOpenReviewModal(true)}>
-                    Feedback
-                </button>
+                {/*Review*/}
+                <div className="relative flex w-full flex-row items-center justify-center gap-12 bg-[#FFF1E0] p-40 pt-48">
+                    <div className="absolute bottom-28 left-24 text-[#5C3200]">
+                        <IoPaw className="h-20 w-20 rotate-320" />
+                        <IoPaw className="h-36 w-36 rotate-45" />
+                    </div>
+                    <div className="flex flex-col items-center justify-center gap-4">
+                        <h1 className="text-center text-6xl font-bold">
+                            Let’s Celebrate Happy Tails Together!
+                        </h1>
+                        <p className="w-240 text-center text-xl">
+                            Every adoption story is special. By sharing your
+                            experience, you help future adopters understand the
+                            joy and fulfillment that comes with giving a pet a
+                            second chance. Let your story be the reason someone
+                            else chooses to adopt, not shop!
+                        </p>
+                        <button
+                            onClick={() => setOpenReviewModal(true)}
+                            className="btn w-fit"
+                        >
+                            Leave A Review
+                        </button>
+                    </div>
+                    <div className="absolute top-20 right-20 text-[#5C3200]">
+                        <IoPaw className="h-36 w-36 rotate-45" />
+                        <IoPaw className="h-20 w-20 rotate-320" />
+                    </div>
+                </div>
             </main>
+            <footer className="right-0 bottom-0 left-0 z-50 flex w-full flex-row items-center justify-between bg-white/50 px-2 py-3 backdrop-blur-sm">
+                <div
+                    className="flex w-44 flex-row items-center gap-2 hover:cursor-pointer"
+                    onClick={scrollToTop}
+                >
+                    <IoPaw className="h-8 w-8 p-1 text-gray-800" />
+                    <p className="text-xl font-bold">FurEverHome</p>
+                </div>
+                <span className="font-medium">
+                    © 2025 FurEver Home | All rights reserved.
+                </span>
+            </footer>
+
             {openCreatePetModal && (
                 <CreatePetModal
                     onClose={() => setOpenCreatePetModal(false)}
@@ -209,88 +502,15 @@ export default function Home() {
             )}
 
             {openThankYouModal && (
-                <ThankYouModal onClose={() => setopenThankYouModal(false)} />
+                <>
+                    <div className="pointer-events-none fixed inset-0 z-[9999]">
+                        <ConfettiFireworks />
+                    </div>
+                    <ThankYouModal
+                        onClose={() => setOpenThankYouModal(false)}
+                    />
+                </>
             )}
-            <footer></footer>
         </div>
-        // <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-        //   <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        //     <Image
-        //       className="dark:invert"
-        //       src="/next.svg"
-        //       alt="Next.js logo"
-        //       width={180}
-        //       height={38}
-        //       priority
-        //     />
-        //     <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-        //       <li className="mb-2 tracking-[-.01em]">
-        //         Get started by editing{" "}
-        //         <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-        //           app/page.tsx
-        //         </code>
-        //         .
-        //       </li>
-        //       <li className="tracking-[-.01em]">
-        //         Save and see your changes instantly.
-        //       </li>
-        //     </ol>
-
-        //     <div className="flex gap-4 items-center flex-col sm:flex-row">
-        //       <a
-        //         className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-        //         href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-        //         target="_blank"
-        //         rel="noopener noreferrer"
-        //       >
-        //         <Image
-        //           className="dark:invert"
-        //           src="/vercel.svg"
-        //           alt="Vercel logomark"
-        //           width={20}
-        //           height={20}
-        //         />
-        //         Deploy now
-        //       </a>
-        //       <a
-        //         className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-        //         href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-        //         target="_blank"
-        //         rel="noopener noreferrer"
-        //       >
-        //         Read our docs
-        //       </a>
-        //     </div>
-        //   </main>
-        //   <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        //     <a
-        //       className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-        //       href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-        //       target="_blank"
-        //       rel="noopener noreferrer"
-        //         src="/window.svg"
-        //         alt="Window icon"
-        //         width={16}
-        //         height={16}
-        //       />
-        //       Examples
-        //     </a>
-        //     <a
-        //       className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-        //       href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-        //       target="_blank"
-        //       rel="noopener noreferrer"
-        //     >
-        //       <Image
-        //         aria-hidden
-        //         src="/globe.svg"
-        //         alt="Globe icon"
-        //         width={16}
-        //         height={16}
-        //       />
-        //       Go to nextjs.org →
-        //     </a>
-        //   </footer>
-        // </div>
     );
 }

@@ -174,3 +174,30 @@ export async function PATCH(request: NextRequest) {
         );
     }
 }
+
+// DELETE /api/pets - Delete a pet
+export async function DELETE(request: NextRequest) {
+    try {
+        const body = await request.json();
+        const petId = body.id;
+
+        if (!petId) {
+            return NextResponse.json(
+                { error: 'Pet ID is required' },
+                { status: 400 }
+            );
+        }
+
+        await prisma.pet.delete({
+            where: { id: Number(petId) },
+        });
+
+        return NextResponse.json({ message: 'Pet deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting pet:', error);
+        return NextResponse.json(
+            { error: 'Failed to delete pet' },
+            { status: 500 }
+        );
+    }
+}

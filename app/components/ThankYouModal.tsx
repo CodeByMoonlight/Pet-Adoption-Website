@@ -3,6 +3,7 @@
 import { IoIosClose } from 'react-icons/io';
 import { useState } from 'react';
 import Image from 'next/image';
+import { ConfettiFireworks } from '@/components/ui/confetti';
 
 type ThankYouModalProps = {
     onClose: () => void;
@@ -26,7 +27,7 @@ export default function ThankYouModal({ onClose }: ThankYouModalProps) {
                 </div>
                 <div className="relative min-h-38 w-full overflow-hidden rounded-lg">
                     <Image
-                        src="/images/thank-you.gif"
+                        src="/images/TY5.gif"
                         alt="thank you gif"
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 288px"

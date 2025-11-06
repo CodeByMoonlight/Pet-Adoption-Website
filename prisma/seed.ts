@@ -177,7 +177,7 @@ async function main() {
             data: {
                 name: 'Laura Jane',
                 petName: 'Luna',
-                img: '/images/review-1.png',
+                img: '/images/review-1.jpg',
                 rating: 4,
                 review:
                     'Luna has been a wonderful addition to our family. She is so calm and loving, and her gentle nature brings so much peace to our home.',
@@ -187,7 +187,7 @@ async function main() {
             data: {
                 name: 'Michael Torres',
                 petName: 'Buddy',
-                img: '/images/review-2.png',
+                img: '/images/review-2.jpg',
                 rating: 5,
                 review:
                     'Buddy is full of energy and always ready to play fetch. He instantly bonded with my kids and brings joy to everyone he meets.',
@@ -197,7 +197,7 @@ async function main() {
             data: {
                 name: 'Chloe Ramirez',
                 petName: 'Whiskers',
-                img: '/images/review-3.png',
+                img: '/images/review-3.jpg',
                 rating: 4,
                 review:
                     'Whiskers is incredibly playful and affectionate. He loves to nap by the window and cuddle during movie nights.',
@@ -207,7 +207,7 @@ async function main() {
             data: {
                 name: 'Daniel Cruz',
                 petName: 'Bella',
-                img: '/images/review-4.png',
+                img: '/images/review-4.jpg',
                 rating: 5,
                 review:
                     'Bella is such a sweetheart! She’s gentle, friendly, and has adjusted perfectly to our apartment life. Highly recommend adopting her breed.',
@@ -217,7 +217,7 @@ async function main() {
             data: {
                 name: 'Samantha Lee',
                 petName: 'Rocky',
-                img: '/images/review-5.png',
+                img: '/images/review-5.jpg',
                 rating: 3,
                 review:
                     'Rocky took a little time to warm up, but now he’s incredibly loyal and fun to have around. Great companion for morning runs.',
@@ -227,7 +227,7 @@ async function main() {
             data: {
                 name: 'Andrew Parker',
                 petName: 'Milo',
-                img: '/images/review-6.png',
+                img: '/images/review-6.jpg',
                 rating: 5,
                 review:
                     'Milo is absolutely adorable and easy to train. He quickly learned commands and has been the friendliest dog in our neighborhood.',
@@ -237,7 +237,7 @@ async function main() {
             data: {
                 name: 'Julia Fernandez',
                 petName: 'Coco',
-                img: '/images/review-7.png',
+                img: '/images/review-7.jpg',
                 rating: 4,
                 review:
                     'Coco is so gentle and sweet. She loves curling up next to us while we read or watch TV. Perfect for anyone wanting a calm companion.',
@@ -247,7 +247,7 @@ async function main() {
             data: {
                 name: 'Ethan Brooks',
                 petName: 'Daisy',
-                img: '/images/review-8.png',
+                img: '/images/review-8.jpg',
                 rating: 5,
                 review:
                     'Daisy has the kindest personality. She gets along with our other pets and brings a lot of warmth and laughter into our home.',
@@ -257,7 +257,7 @@ async function main() {
             data: {
                 name: 'Grace Mitchell',
                 petName: 'Max',
-                img: '/images/review-9.png',
+                img: '/images/review-9.jpg',
                 rating: 4,
                 review:
                     'Max is full of life and always ready for an adventure. He’s smart, active, and loves going on long walks every morning.',
@@ -267,44 +267,10 @@ async function main() {
             data: {
                 name: 'Ryan Collins',
                 petName: 'Nala',
-                img: '/images/review-10.png',
+                img: '/images/review-10.jpg',
                 rating: 5,
                 review:
                     'Nala has been the most affectionate and loyal companion. She loves attention and always greets us with excitement and tail wags.',
-            },
-        }),
-    ]);
-
-    // Create sample adoptions
-    const adoptions = await Promise.all([
-        prisma.adopt.create({
-            data: {
-                name: 'Laura Jane',
-                petId: 1,
-                address: '123 Main St, San Francisco, CA',
-                email: 'laura.jane@example.com',
-                phoneNo: '555-1234',
-                reason: 'Looking for a calm companion.',
-            },
-        }),
-        prisma.adopt.create({
-            data: {
-                name: 'John Doe',
-                petId: 4,
-                address: '456 Oak St, Los Angeles, CA',
-                email: 'john.doe@example.com',
-                phoneNo: '555-5678',
-                reason: 'Looking for a playful companion.',
-            },
-        }),
-        prisma.adopt.create({
-            data: {
-                name: 'Emily Smith',
-                petId: 6,
-                address: '789 Pine St, Los Angeles, CA',
-                email: 'emily.smith@example.com',
-                phoneNo: '555-9012',
-                reason: 'Looking for a friendly companion.',
             },
         }),
     ]);
@@ -313,9 +279,6 @@ async function main() {
     pets.forEach((pet) => console.log(`  - ${pet.name} (${pet.breed})`));
     reviews.forEach((review) =>
         console.log(`  - Review by ${review.name} for ${review.petName}`)
-    );
-    adoptions.forEach((adopt) =>
-        console.log(`  - Adoption by ${adopt.name} for pet ID ${adopt.petId}`)
     );
 }
 

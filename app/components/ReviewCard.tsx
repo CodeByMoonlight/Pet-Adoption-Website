@@ -24,14 +24,15 @@ export default function ReviewCard({ review }: ReviewCardProps) {
                     src={review.img}
                     alt="Review Image"
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover"
                     priority
                 />
             </div>
-            <div className="absolute top-0 left-0 flex h-full w-full flex-col justify-end gap-2 rounded-lg bg-gradient-to-b from-transparent via-white/10 to-white p-4">
-                <RiDoubleQuotesL className="h-6 w-6" />
-                <p className="h-16 text-sm">{review.review}</p>
-                <p className="text-right text-xs">-{review.name}</p>
+            <div className="absolute top-0 left-0 flex h-full w-full flex-col justify-end gap-2 rounded-lg bg-gradient-to-b from-transparent via-white/24 to-white p-4">
+                <RiDoubleQuotesL className="h-6 w-6 text-gray-800" />
+                <p className="h-16 text-sm font-medium">{review.review}</p>
+                <p className="text-right text-sm">-{review.name}</p>
             </div>
         </div>
     );
