@@ -148,6 +148,60 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/*Loading CSS*/
+@keyframes fadeOutBackground {
+  0% {
+    background-color: #B1CED0;
+    opacity: 1;
+  }
+  100% {
+    background-color: transparent;
+    opacity: 0;
+  }
+}
+
+@keyframes suck {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  25% {
+    transform: scale(0.75);
+    opacity: 0.75;
+  }
+
+  50% {
+    transform: scale(0.5);
+    opacity: 0.5;
+  }
+
+  75% {
+    transform: scale(0.25);
+    opacity: 0.25;
+  }
+
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+/* Loading */
+.loading {
+  background-color: #B1CED0;
+  transition: all 0.3s ease;
+}
+
+.loading.fade-out {
+  animation: fadeOutBackground 1s ease-out forwards;
+}
+
+.loading-icon {
+  animation: suck 0.2s ease-in forwards;
+  animation-delay: 7.8s;
+}
+
 /* Modal CSS */
 .modal {
   display: flex;

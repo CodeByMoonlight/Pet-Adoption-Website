@@ -11,6 +11,9 @@ import UpdatePetModal from './components/UpdatePetModal';
 import ViewPetModal from './components/ViewPetModal';
 import ThankYouModal from './components/ThankYouModal';
 import { ConfettiFireworks } from '@/components/ui/confetti';
+import AudioPlayer from './components/AudioPlayer';
+import Loading from './components/Loading';
+import ScrollReveal from './components/ScrollReveal';
 
 // Hooks
 import { useEffect, useState } from 'react';
@@ -204,15 +207,37 @@ export default function Home() {
         }
     };
 
-    // Scroll to top function
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    if (loading) return <div>Loading...</div>;
+    // Functions Related to Loading
+    // Check if this is the first visit in this session
+    const [showLoading, setShowLoading] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return !sessionStorage.getItem('hasSeenLoading');
+        }
+        return true;
+    });
+
+    const handleLoadingComplete = () => {
+        setShowLoading(false);
+        // Mark that loading has been seen in this session
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('hasSeenLoading', 'true');
+        }
+    };
+
+    if (loading) return <div></div>;
 
     return (
         <div>
+            {showLoading && (
+                <Loading
+                    isDataLoading={loading}
+                    onComplete={handleLoadingComplete}
+                />
+            )}
             <nav
                 className={`navbar fixed top-0 right-0 left-0 z-10 mx-5! flex flex-row items-center justify-between rounded-2xl bg-white/60 p-3 backdrop-blur-sm transition-transform duration-300 ${showNavbar ? 'translate-y-5' : '-translate-y-full'}`}
             >
@@ -317,35 +342,43 @@ export default function Home() {
                     id="pets"
                     className="flex flex-col items-center gap-8 pt-24"
                 >
-                    <div className="section-header">
-                        <div className="section-title">
-                            <IoPaw className="icons" />
-                            <h1>PETS</h1>
-                            <IoPaw className="icons" />
+                    <ScrollReveal direction="fade" duration={1000}>
+                        <div className="section-header">
+                            <div className="section-title">
+                                <IoPaw className="icons" />
+                                <h1>PETS</h1>
+                                <IoPaw className="icons" />
+                            </div>
+                            <p>
+                                Meet our wonderful pets! Each one has a unique
+                                charm and is ready to bring joy, warmth, and
+                                companionship into your life.
+                            </p>
                         </div>
-                        <p>
-                            Meet our wonderful pets! Each one has a unique charm
-                            and is ready to bring joy, warmth, and companionship
-                            into your life.
-                        </p>
-                    </div>
+                    </ScrollReveal>
                     <div className="flex max-w-360 flex-wrap justify-center gap-8">
-                        {pets.slice(0, 8).map((pet) => (
-                            <PetCard
+                        {pets.slice(0, 8).map((pet, index) => (
+                            <ScrollReveal
                                 key={pet.id}
-                                pet={pet}
-                                onClick={() => {
-                                    setSelectedPet(pet);
-                                    setOpenViewPetModal(true);
-                                }}
-                                onEdit={() => {
-                                    setSelectedPet(pet);
-                                    setOpenUpdatePetModal(true);
-                                }}
-                                onDelete={() =>
-                                    handlePetDelete(pet.id, pet.name)
-                                }
-                            />
+                                direction="up"
+                                duration={600}
+                                delay={index * 100}
+                            >
+                                <PetCard
+                                    pet={pet}
+                                    onClick={() => {
+                                        setSelectedPet(pet);
+                                        setOpenViewPetModal(true);
+                                    }}
+                                    onEdit={() => {
+                                        setSelectedPet(pet);
+                                        setOpenUpdatePetModal(true);
+                                    }}
+                                    onDelete={() =>
+                                        handlePetDelete(pet.id, pet.name)
+                                    }
+                                />
+                            </ScrollReveal>
                         ))}
                     </div>
                     <a href="/pets" className="btn">
@@ -358,99 +391,107 @@ export default function Home() {
                     id="about"
                     className="bg-tertiary-light flex w-full flex-row items-center justify-center gap-12 py-8"
                 >
-                    <div className="section-header">
-                        <div className="section-title">
-                            <IoPaw className="icons" />
-                            <h1>ABOUT</h1>
-                            <IoPaw className="icons" />
+                    <ScrollReveal direction="fade" duration={1000}>
+                        <div className="section-header">
+                            <div className="section-title">
+                                <IoPaw className="icons" />
+                                <h1>ABOUT</h1>
+                                <IoPaw className="icons" />
+                            </div>
+                            <p>
+                                We're more than just an adoption center, we're a
+                                compassionate community built on love, care, and
+                                second chances. Together, we create a space
+                                where people and pets can connect, heal, and
+                                grow as family.
+                            </p>
+                            <button
+                                onClick={() => scrollToSection('reviews')}
+                                className="btn"
+                            >
+                                Check Reviews
+                            </button>
                         </div>
-                        <p>
-                            We're more than just an adoption center, we're a
-                            compassionate community built on love, care, and
-                            second chances. Together, we create a space where
-                            people and pets can connect, heal, and grow as
-                            family.
-                        </p>
-                        <button
-                            onClick={() => scrollToSection('reviews')}
-                            className="btn"
-                        >
-                            Check Reviews
-                        </button>
-                    </div>
-                    <div className="relative h-140 w-160">
-                        <Image
-                            src="/images/about.png"
-                            alt="about"
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            className="object-contain"
-                            priority
-                        />
-                    </div>
+                    </ScrollReveal>
+                    <ScrollReveal direction="fade" duration={1000}>
+                        <div className="relative h-140 w-160">
+                            <Image
+                                src="/images/about.png"
+                                alt="about"
+                                fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                className="object-contain"
+                                priority
+                            />
+                        </div>
+                    </ScrollReveal>
                 </div>
 
                 {/* Review*/}
                 <div id="reviews" className="flex flex-col gap-8">
-                    <div className="section-header">
-                        <div className="section-title">
-                            <IoPaw className="icons" />
-                            <h1>REVIEWS</h1>
-                            <IoPaw className="icons" />
+                    <ScrollReveal direction="fade" duration={1000}>
+                        <div className="section-header">
+                            <div className="section-title">
+                                <IoPaw className="icons" />
+                                <h1>REVIEWS</h1>
+                                <IoPaw className="icons" />
+                            </div>
+                            <p>
+                                Every adoption creates a story worth sharing.
+                                Here are a few of our favorites.
+                            </p>
                         </div>
-                        <p>
-                            Every adoption creates a story worth sharing. Here
-                            are a few of our favorites.
-                        </p>
-                    </div>
-                    <div className="flex max-w-381 flex-col gap-12 overflow-hidden pb-12">
-                        {/* First row - scrolls left */}
-                        <div className="carousel-row">
-                            <div className="carousel-left flex gap-8">
-                                {reviews.slice(0, 5).map((review) => (
-                                    <ReviewCard
-                                        key={review.id}
-                                        review={review}
-                                    />
-                                ))}
-                                {reviews.slice(0, 5).map((review) => (
-                                    <ReviewCard
-                                        key={`dup-1-${review.id}`}
-                                        review={review}
-                                    />
-                                ))}
-                                {reviews.slice(0, 5).map((review) => (
-                                    <ReviewCard
-                                        key={`dup-2-${review.id}`}
-                                        review={review}
-                                    />
-                                ))}
+                    </ScrollReveal>
+                    <ScrollReveal direction="fade" duration={1000}>
+                        <div className="flex max-w-381 flex-col gap-12 overflow-hidden pb-12">
+                            {/* First row - scrolls left */}
+                            <div className="carousel-row">
+                                <div className="carousel-left flex gap-8">
+                                    {reviews.slice(0, 5).map((review) => (
+                                        <ReviewCard
+                                            key={review.id}
+                                            review={review}
+                                        />
+                                    ))}
+                                    {reviews.slice(0, 5).map((review) => (
+                                        <ReviewCard
+                                            key={`dup-1-${review.id}`}
+                                            review={review}
+                                        />
+                                    ))}
+                                    {reviews.slice(0, 5).map((review) => (
+                                        <ReviewCard
+                                            key={`dup-2-${review.id}`}
+                                            review={review}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                            {/* Second row - scrolls right */}
+                            <div className="carousel-row">
+                                <div className="carousel-right flex gap-8">
+                                    {reviews.slice(5, 10).map((review) => (
+                                        <ReviewCard
+                                            key={review.id}
+                                            review={review}
+                                        />
+                                    ))}
+                                    {reviews.slice(5, 10).map((review) => (
+                                        <ReviewCard
+                                            key={`dup-1-${review.id}`}
+                                            review={review}
+                                        />
+                                    ))}
+                                    {reviews.slice(5, 10).map((review) => (
+                                        <ReviewCard
+                                            key={`dup-2-${review.id}`}
+                                            review={review}
+                                        />
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                        {/* Second row - scrolls right */}
-                        <div className="carousel-row">
-                            <div className="carousel-right flex gap-8">
-                                {reviews.slice(5, 10).map((review) => (
-                                    <ReviewCard
-                                        key={review.id}
-                                        review={review}
-                                    />
-                                ))}
-                                {reviews.slice(5, 10).map((review) => (
-                                    <ReviewCard
-                                        key={`dup-1-${review.id}`}
-                                        review={review}
-                                    />
-                                ))}
-                                {reviews.slice(5, 10).map((review) => (
-                                    <ReviewCard
-                                        key={`dup-2-${review.id}`}
-                                        review={review}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                    </ScrollReveal>
                 </div>
 
                 {/*Review*/}
@@ -459,24 +500,26 @@ export default function Home() {
                         <IoPaw className="h-20 w-20 rotate-320" />
                         <IoPaw className="h-36 w-36 rotate-45" />
                     </div>
-                    <div className="flex flex-col items-center justify-center gap-4">
-                        <h1 className="text-center text-6xl font-bold">
-                            Let's Celebrate Happy Tails Together!
-                        </h1>
-                        <p className="w-240 text-center text-xl">
-                            Every adoption story is special. By sharing your
-                            experience, you help future adopters understand the
-                            joy and fulfillment that comes with giving a pet a
-                            second chance. Let your story be the reason someone
-                            else chooses to adopt, not shop!
-                        </p>
-                        <button
-                            onClick={() => setOpenReviewModal(true)}
-                            className="btn w-fit"
-                        >
-                            Leave A Review
-                        </button>
-                    </div>
+                    <ScrollReveal direction="fade" duration={1000}>
+                        <div className="flex flex-col items-center justify-center gap-4">
+                            <h1 className="text-center text-6xl font-bold">
+                                Let's Celebrate Happy Tails Together!
+                            </h1>
+                            <p className="w-240 text-center text-xl">
+                                Every adoption story is special. By sharing your
+                                experience, you help future adopters understand
+                                the joy and fulfillment that comes with giving a
+                                pet a second chance. Let your story be the
+                                reason someone else chooses to adopt, not shop!
+                            </p>
+                            <button
+                                onClick={() => setOpenReviewModal(true)}
+                                className="btn w-fit"
+                            >
+                                Leave A Review
+                            </button>
+                        </div>
+                    </ScrollReveal>
                     <div className="text-brown-col absolute top-20 right-20">
                         <IoPaw className="h-36 w-36 rotate-45" />
                         <IoPaw className="h-20 w-20 rotate-320" />
@@ -548,6 +591,8 @@ export default function Home() {
                     />
                 </>
             )}
+
+            <AudioPlayer />
         </div>
     );
 }

@@ -1,9 +1,7 @@
 'use client';
 
 // Components
-import Image from 'next/image';
 import PetCard from '../components/PetCard';
-import ReviewCard from '../components/ReviewCard';
 import AdoptModal from '../components/AdoptModal';
 import ReviewModal from '../components/ReviewModal';
 import CreatePetModal from '../components/CreatePetModal';
@@ -11,6 +9,8 @@ import UpdatePetModal from '../components/UpdatePetModal';
 import ViewPetModal from '../components/ViewPetModal';
 import ThankYouModal from '../components/ThankYouModal';
 import { ConfettiFireworks } from '@/components/ui/confetti';
+import Loading from '../components/Loading';
+import AudioPlayer from '../components/AudioPlayer';
 
 // Hooks and Utilities
 import { useState, useEffect } from 'react';
@@ -191,10 +191,33 @@ export default function PetsPage() {
         return pageNumbers;
     };
 
-    if (loading) return <div>Loading...</div>;
+    // Functions Related to Loading
+    // Check if this is the first visit in this session
+    const [showLoading, setShowLoading] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return !sessionStorage.getItem('hasSeenLoading');
+        }
+        return true;
+    });
+
+    const handleLoadingComplete = () => {
+        setShowLoading(false);
+        // Mark that loading has been seen in this session
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('hasSeenLoading', 'true');
+        }
+    };
+
+    if (loading) return <div></div>;
 
     return (
         <div className="flex flex-col items-center justify-center gap-12 pt-12 pb-12">
+            {showLoading && (
+                <Loading
+                    isDataLoading={loading}
+                    onComplete={handleLoadingComplete}
+                />
+            )}
             <div className="flex w-full max-w-310 flex-row items-center justify-between">
                 <div className="flex flex-row items-center justify-center gap-2">
                     <a href="/">
@@ -203,7 +226,7 @@ export default function PetsPage() {
                     <h1 className="text-5xl font-bold">ADOPT A PET</h1>
                 </div>
                 <div className="flex flex-row items-center justify-center gap-2">
-                    <div className="border-main-gray flex w-100 flex-row items-center justify-start gap-2 rounded-sm border-2 bg-white px-4 py-[0.5rem] text-sm hover:cursor-pointer">
+                    <div className="border-main-gray flex w-100 flex-row items-center justify-start gap-2 rounded-lg border-2 bg-white px-4 py-[0.5rem] text-sm hover:cursor-pointer">
                         <FiSearch className="h-4 w-4" />
                         <input
                             type="text"
@@ -221,7 +244,7 @@ export default function PetsPage() {
                             onClick={() => setOpenCreatePetModal(true)}
                             className=""
                         >
-                            <FaPlus className="border-main-gray h-9 w-9 cursor-pointer rounded-sm border-2 bg-white p-2 hover:scale-110 hover:bg-gray-100" />
+                            <FaPlus className="border-main-gray h-10 w-10 cursor-pointer rounded-lg border-2 bg-white p-2 hover:scale-110 hover:bg-gray-100" />
                         </button>
                     )}
                 </div>
@@ -350,6 +373,8 @@ export default function PetsPage() {
                     />
                 </>
             )}
+
+            <AudioPlayer />
         </div>
     );
 }
