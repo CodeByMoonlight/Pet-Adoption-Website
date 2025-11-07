@@ -16,10 +16,7 @@ export default function AdoptModal({
     petId,
     petName,
 }: AdoptModalProps) {
-    const handleClose = () => {
-        onClose?.();
-    };
-
+    // States for form handling
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -30,6 +27,8 @@ export default function AdoptModal({
         reason: '',
     });
 
+    // Functions
+    // Functions for form handling
     const handleInputChange = (
         e: React.ChangeEvent<
             HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -73,6 +72,11 @@ export default function AdoptModal({
         }
     };
 
+    // Close modal handler
+    const handleClose = () => {
+        onClose?.();
+    };
+
     return (
         <div className="modal" onClick={handleClose}>
             <div
@@ -101,6 +105,7 @@ export default function AdoptModal({
                                 value={formData.name}
                                 onChange={handleInputChange}
                                 placeholder="Enter your full name"
+                                required
                             />
                         </div>
                         <div className="input-group">
@@ -112,6 +117,7 @@ export default function AdoptModal({
                                 value={formData.address}
                                 onChange={handleInputChange}
                                 placeholder="Enter your address"
+                                required
                             />
                         </div>
                         <div className="input-group-div">
@@ -124,6 +130,7 @@ export default function AdoptModal({
                                     value={formData.email}
                                     onChange={handleInputChange}
                                     placeholder="Enter your email"
+                                    required
                                 />
                             </div>
                             <div className="input-group">
@@ -135,6 +142,7 @@ export default function AdoptModal({
                                     value={formData.phoneNo}
                                     onChange={handleInputChange}
                                     placeholder="Enter your phone number"
+                                    required
                                 />
                             </div>
                         </div>
@@ -146,8 +154,10 @@ export default function AdoptModal({
                                 value={formData.reason}
                                 onChange={handleInputChange}
                                 placeholder="Your reason..."
+                                required
                             />
                         </div>
+
                         <button type="submit" disabled={isSubmitting}>
                             {isSubmitting
                                 ? 'Submitting...'

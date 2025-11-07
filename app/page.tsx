@@ -1,5 +1,6 @@
 'use client';
 
+// Components
 import Image from 'next/image';
 import PetCard from './components/PetCard';
 import ReviewCard from './components/ReviewCard';
@@ -8,10 +9,16 @@ import ReviewModal from './components/ReviewModal';
 import CreatePetModal from './components/CreatePetModal';
 import UpdatePetModal from './components/UpdatePetModal';
 import ViewPetModal from './components/ViewPetModal';
-import { useEffect, useState } from 'react';
-import { Adopt } from '@prisma/client';
 import ThankYouModal from './components/ThankYouModal';
 import { ConfettiFireworks } from '@/components/ui/confetti';
+
+// Hooks
+import { useEffect, useState } from 'react';
+
+// Types
+import { Adopt } from '@prisma/client';
+
+// Icons
 import { IoPaw } from 'react-icons/io5';
 import { FaGithub } from 'react-icons/fa';
 
@@ -19,6 +26,7 @@ type Pet = {
     id: number;
     name: string;
     breed: string;
+    type: string;
     sex: string;
     age: number;
     location: string;
@@ -40,21 +48,28 @@ type Review = {
 };
 
 export default function Home() {
+    // State //
+    // Modal States
+    const [openCreatePetModal, setOpenCreatePetModal] = useState(false);
+    const [openViewPetModal, setOpenViewPetModal] = useState(false);
+    const [openUpdatePetModal, setOpenUpdatePetModal] = useState(false);
+    const [openReviewModal, setOpenReviewModal] = useState(false);
+    const [openAdoptModal, setOpenAdoptModal] = useState(false);
+    const [openThankYouModal, setOpenThankYouModal] = useState(false);
+
+    // Data States
     const [pets, setPets] = useState<Pet[]>([]);
     const [reviews, setReviews] = useState<Review[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [openViewPetModal, setOpenViewPetModal] = useState(false);
-    const [openCreatePetModal, setOpenCreatePetModal] = useState(false);
-    const [openUpdatePetModal, setOpenUpdatePetModal] = useState(false);
-    const [openAdoptModal, setOpenAdoptModal] = useState(false);
-    const [openReviewModal, setOpenReviewModal] = useState(false);
     const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
     const [adoptedData, setAdoptedData] = useState<Adopt[]>([]);
-    const [openThankYouModal, setOpenThankYouModal] = useState(false);
-    const [activeSection, setActiveSection] = useState('home');
 
-    // Show/hide navbar on scroll and track active section
+    // Loading and Navbar States
+    const [loading, setLoading] = useState(true);
+    const [activeSection, setActiveSection] = useState('home');
     const [showNavbar, setShowNavbar] = useState(true);
+
+    // Effects//
+    // Show/hide navbar on scroll and track active section
     useEffect(() => {
         let lastScrollY = window.scrollY;
         const handleScroll = () => {
@@ -85,6 +100,7 @@ export default function Home() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // Fetch Pets and Adopted Data
     useEffect(() => {
         const fetchPets = async () => {
             try {
@@ -111,6 +127,7 @@ export default function Home() {
         fetchPets();
     }, []);
 
+    // Fetch Reviews
     useEffect(() => {
         try {
             fetch('/api/reviews')
@@ -124,8 +141,8 @@ export default function Home() {
         }
     }, []);
 
-    if (loading) return <div>Loading...</div>;
-
+    // Functions //
+    // Functions Related to Pets
     const handlePetUpdate = (updatedPet: Pet) => {
         setPets((prevPets) =>
             prevPets.map((pet) =>
@@ -133,6 +150,22 @@ export default function Home() {
             ),
         );
         setSelectedPet(updatedPet);
+    };
+
+    const handlePetDelete = async (petId: number, petName: string) => {
+        const confirmed = window.confirm(
+            `Are you sure you want to delete ${petName}? This action cannot be undone.`,
+        );
+        if (confirmed) {
+            await fetch('/api/pets', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: petId }),
+            });
+            refreshPets();
+        }
     };
 
     const refreshPets = async () => {
@@ -162,11 +195,12 @@ export default function Home() {
         refreshPets(); // Refresh the pets list to remove the adopted pet
     };
 
+    // Functions Related to Navigation
     // Scroll to section function
     const scrollToSection = (sectionId: string) => {
         const element = document.getElementById(sectionId);
         if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     };
 
@@ -175,71 +209,68 @@ export default function Home() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Handle pet delete with confirmation
-    const handlePetDelete = async (petId: number, petName: string) => {
-        const confirmed = window.confirm(
-            `Are you sure you want to delete ${petName}? This action cannot be undone.`,
-        );
-        if (confirmed) {
-            await fetch('/api/pets', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: petId }),
-            });
-            refreshPets();
-        }
-    };
+    if (loading) return <div>Loading...</div>;
 
     return (
         <div>
             <nav
-                className={`fixed top-0 right-0 left-0 z-10 mx-5! flex flex-row items-center justify-between rounded-2xl bg-white/60 p-3 backdrop-blur-sm transition-transform duration-300 ${showNavbar ? 'translate-y-5' : '-translate-y-full'}`}
+                className={`navbar fixed top-0 right-0 left-0 z-10 mx-5! flex flex-row items-center justify-between rounded-2xl bg-white/60 p-3 backdrop-blur-sm transition-transform duration-300 ${showNavbar ? 'translate-y-5' : '-translate-y-full'}`}
             >
                 <div
                     className="flex w-44 flex-row items-center gap-2 hover:cursor-pointer"
                     onClick={scrollToTop}
                 >
-                    <IoPaw className="h-8 w-8 p-1 text-gray-800" />
+                    <IoPaw className="text-main-black h-8 w-8 p-1" />
                     <p className="text-xl font-bold">FurEverHome</p>
                 </div>
                 <div className="flex flex-row gap-8">
-                    <span
-                        className={`nav-item ${activeSection === 'home' ? 'font-bold text-[#12585e]' : ''}`}
+                    <div
+                        className={`nav-item ${activeSection === 'home' ? '!text-secondary-accent font-bold' : ''}`}
                         onClick={() => scrollToSection('home')}
                     >
                         HOME
-                    </span>
-                    <span
-                        className={`nav-item ${activeSection === 'pets' ? 'font-bold text-[#12585e]' : ''}`}
+                    </div>
+                    <div
+                        className={`nav-item ${activeSection === 'pets' ? '!text-secondary-accent font-bold' : ''}`}
                         onClick={() => scrollToSection('pets')}
                     >
                         PETS
-                    </span>
-                    <span
-                        className={`nav-item ${activeSection === 'about' ? 'font-bold text-[#12585e]' : ''}`}
+                    </div>
+                    <div
+                        className={`nav-item ${activeSection === 'about' ? '!text-secondary-accent font-bold' : ''}`}
                         onClick={() => scrollToSection('about')}
                     >
                         ABOUT
-                    </span>
-                    <span
-                        className={`nav-item ${activeSection === 'reviews' ? 'font-bold text-[#12585e]' : ''}`}
+                    </div>
+                    <div
+                        className={`nav-item ${activeSection === 'reviews' ? '!text-secondary-accent font-bold' : ''}`}
                         onClick={() => scrollToSection('reviews')}
                     >
                         REVIEWS
-                    </span>
+                    </div>
                 </div>
                 <div className="flex w-44 flex-row justify-end gap-2">
-                    <IoPaw className="icons" />
-                    <FaGithub className="icons" />
+                    <a
+                        href="https://github.com/CodeByMoonlight/Pet-Adoption-Website"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <FaGithub className="icons" />
+                    </a>
+                    <a
+                        href="https://www.facebook.com/pawsphilippines/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <IoPaw className="icons" />
+                    </a>
                 </div>
             </nav>
             <main className="flex flex-col items-center justify-center gap-36">
                 {/* Hero*/}
                 <div
                     id="home"
-                    className="relative flex h-180 w-full flex-row items-center justify-center bg-[#FFF1E0] pb-24 pl-20"
+                    className="bg-tertiary-light relative flex h-180 w-full flex-row items-center justify-center pb-20 pl-20"
                 >
                     <img
                         src="/images/transition.svg"
@@ -248,18 +279,26 @@ export default function Home() {
                     />
                     <div className="relative z-10 w-164">
                         <div className="flex flex-col gap-4">
-                            <h1 className="text-6xl font-bold">
-                                Together, We Can Give Every Animal a Place to
-                                Call Home
+                            <h1 className="text-6xl leading-18 font-bold">
+                                Together, We Can Give Every Animal a{' '}
+                                <div className="text-secondary-col flex flex-row items-center gap-4">
+                                    FurEverHome
+                                    <IoPaw className="text-main-black h-8 w-8 rotate-36" />
+                                </div>
                             </h1>
-                            <p className="text-xl">
+                            <p className="text-xl leading-snug">
                                 Behind every pair of hopeful eyes is a story
                                 ready to change your life. Discover pets looking
                                 for love and make your home a place filled with
                                 warmth, joy, and endless pawprints.
                             </p>
                         </div>
-                        <button className="btn">View Pets</button>
+                        <button
+                            className="btn"
+                            onClick={() => scrollToSection('pets')}
+                        >
+                            View Pets
+                        </button>
                     </div>
                     <div className="relative h-150 w-160">
                         <Image
@@ -317,7 +356,7 @@ export default function Home() {
                 {/* About*/}
                 <div
                     id="about"
-                    className="flex w-full flex-row items-center justify-center gap-12 bg-[#FFF1E0] py-8"
+                    className="bg-tertiary-light flex w-full flex-row items-center justify-center gap-12 py-8"
                 >
                     <div className="section-header">
                         <div className="section-title">
@@ -326,17 +365,17 @@ export default function Home() {
                             <IoPaw className="icons" />
                         </div>
                         <p>
-                            We’re more than just an adoption center, we’re a
+                            We're more than just an adoption center, we're a
                             compassionate community built on love, care, and
                             second chances. Together, we create a space where
                             people and pets can connect, heal, and grow as
                             family.
                         </p>
                         <button
-                            onClick={() => setOpenAdoptModal(true)}
+                            onClick={() => scrollToSection('reviews')}
                             className="btn"
                         >
-                            Adopt A Pet
+                            Check Reviews
                         </button>
                     </div>
                     <div className="relative h-140 w-160">
@@ -374,14 +413,12 @@ export default function Home() {
                                         review={review}
                                     />
                                 ))}
-                                {/* Duplicate for seamless loop */}
                                 {reviews.slice(0, 5).map((review) => (
                                     <ReviewCard
                                         key={`dup-1-${review.id}`}
                                         review={review}
                                     />
                                 ))}
-                                {/* Additional duplicate for seamless transition */}
                                 {reviews.slice(0, 5).map((review) => (
                                     <ReviewCard
                                         key={`dup-2-${review.id}`}
@@ -399,14 +436,12 @@ export default function Home() {
                                         review={review}
                                     />
                                 ))}
-                                {/* Duplicate for seamless loop */}
                                 {reviews.slice(5, 10).map((review) => (
                                     <ReviewCard
                                         key={`dup-1-${review.id}`}
                                         review={review}
                                     />
                                 ))}
-                                {/* Additional duplicate for seamless transition */}
                                 {reviews.slice(5, 10).map((review) => (
                                     <ReviewCard
                                         key={`dup-2-${review.id}`}
@@ -419,14 +454,14 @@ export default function Home() {
                 </div>
 
                 {/*Review*/}
-                <div className="relative flex w-full flex-row items-center justify-center gap-12 bg-[#FFF1E0] p-40 pt-48">
-                    <div className="absolute bottom-28 left-24 text-[#5C3200]">
+                <div className="bg-tertiary-light relative flex w-full flex-row items-center justify-center gap-12 p-40 pt-48">
+                    <div className="text-brown-col absolute bottom-28 left-24">
                         <IoPaw className="h-20 w-20 rotate-320" />
                         <IoPaw className="h-36 w-36 rotate-45" />
                     </div>
                     <div className="flex flex-col items-center justify-center gap-4">
                         <h1 className="text-center text-6xl font-bold">
-                            Let’s Celebrate Happy Tails Together!
+                            Let's Celebrate Happy Tails Together!
                         </h1>
                         <p className="w-240 text-center text-xl">
                             Every adoption story is special. By sharing your
@@ -442,7 +477,7 @@ export default function Home() {
                             Leave A Review
                         </button>
                     </div>
-                    <div className="absolute top-20 right-20 text-[#5C3200]">
+                    <div className="text-brown-col absolute top-20 right-20">
                         <IoPaw className="h-36 w-36 rotate-45" />
                         <IoPaw className="h-20 w-20 rotate-320" />
                     </div>
@@ -453,13 +488,15 @@ export default function Home() {
                     className="flex w-44 flex-row items-center gap-2 hover:cursor-pointer"
                     onClick={scrollToTop}
                 >
-                    <IoPaw className="h-8 w-8 p-1 text-gray-800" />
+                    <IoPaw className="text-main-black h-8 w-8 p-1" />
                     <p className="text-xl font-bold">FurEverHome</p>
                 </div>
-                <span className="font-medium">
-                    © 2025 FurEver Home | All rights reserved.
-                </span>
+                <p className="font-medium">
+                    © 2025 FurEverHome | All rights reserved.
+                </p>
             </footer>
+
+            {/* Modals */}
 
             {openCreatePetModal && (
                 <CreatePetModal
@@ -493,7 +530,7 @@ export default function Home() {
                 <ViewPetModal
                     pet={selectedPet}
                     onClose={() => setOpenViewPetModal(false)}
-                    onPetUpdate={handlePetUpdate} //Note
+                    onPetUpdate={handlePetUpdate}
                     onAdopt={() => {
                         setOpenViewPetModal(false);
                         setOpenAdoptModal(true);

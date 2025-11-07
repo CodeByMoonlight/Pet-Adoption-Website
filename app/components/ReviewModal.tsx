@@ -9,10 +9,7 @@ type ReviewModalProps = {
 };
 
 export default function ReviewModal({ onClose }: ReviewModalProps) {
-    const handleClose = () => {
-        onClose?.();
-    };
-
+    // States for form handling
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [rating, setRating] = useState(0);
@@ -24,6 +21,7 @@ export default function ReviewModal({ onClose }: ReviewModalProps) {
         review: '',
     });
 
+    // Functions for form handling
     const handleInputChange = (
         e: React.ChangeEvent<
             HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -93,6 +91,11 @@ export default function ReviewModal({ onClose }: ReviewModalProps) {
         }
     };
 
+    // Close modal handler
+    const handleClose = () => {
+        onClose?.();
+    };
+
     return (
         <div className="modal" onClick={handleClose}>
             <div
@@ -103,7 +106,7 @@ export default function ReviewModal({ onClose }: ReviewModalProps) {
                     <div className="">
                         <h1 className="pb-1 text-4xl font-bold">REVIEW</h1>
                         <p className="text-sm">
-                            We’d love to hear what you think
+                            We'd love to hear what you think
                         </p>
                     </div>
                     <button className="" onClick={handleClose}>
@@ -121,6 +124,7 @@ export default function ReviewModal({ onClose }: ReviewModalProps) {
                                 value={formData.name}
                                 onChange={handleInputChange}
                                 placeholder="Enter your full name"
+                                required
                             />
                         </div>
                         <div className="input-group-div">
@@ -133,6 +137,7 @@ export default function ReviewModal({ onClose }: ReviewModalProps) {
                                     value={formData.petName}
                                     onChange={handleInputChange}
                                     placeholder="Enter your pet's name"
+                                    required
                                 />
                             </div>
                             <div className="input-group">
@@ -142,6 +147,7 @@ export default function ReviewModal({ onClose }: ReviewModalProps) {
                                     type="file"
                                     accept="image/*"
                                     onChange={handleFileChange}
+                                    required
                                 />
                             </div>
                         </div>
@@ -151,7 +157,7 @@ export default function ReviewModal({ onClose }: ReviewModalProps) {
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <FaStar
                                         key={star}
-                                        className={`h-10 w-10 cursor-pointer rounded-lg border-2 border-gray-200 p-2 transition-colors ${
+                                        className={`border-main-gray h-10 w-10 cursor-pointer rounded-lg border-2 p-2 transition-colors ${
                                             star <= (hoverRating || rating)
                                                 ? 'text-yellow-400'
                                                 : 'text-gray-300'
@@ -173,8 +179,10 @@ export default function ReviewModal({ onClose }: ReviewModalProps) {
                                 value={formData.review}
                                 onChange={handleInputChange}
                                 placeholder="Your feedback..."
+                                required
                             />
                         </div>
+
                         <button type="submit" disabled={isSubmitting}>
                             {isSubmitting ? 'Submitting...' : 'Submit Record'}
                         </button>

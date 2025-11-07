@@ -1,33 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
-/* :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-} */
-
+/* Reset CSS*/
 /* 1. Use a more-intuitive box-sizing model */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -66,11 +40,11 @@ input, button, textarea, select {
 /* 8. Avoid text overflows */
 p, h1, h2, h3, h4, h5, h6 {
   overflow-wrap: break-word;
-  color: #1e2939;
+  color: var(--color-main-black);
 }
 
 label {
-  color: #1e2939;
+  color: var(--color-main-black);
 }
 
 /* 9. Improve line wrapping */
@@ -89,7 +63,32 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /*Custom Styling*/
+/*Custom Font*/
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-VariableFont_opsz,wght.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+}
 
+/*Custom Colors*/
+@theme {
+  --color-primary-col: #F94F46;
+  --color-primary-accent: #fa281d;
+  --color-primary-light: #fdd0ce;
+  --color-secondary-col: #21A0AA;
+  --color-secondary-accent: #106365;
+  --color-secondary-light: #d4f4f7;
+  --color-tertiary-col: #FFCF2D;
+  --color-tertiary-accent: #ebb500;
+  --color-tertiary-light: #FFF1E0;
+  --color-main-black: #1e2939;
+  --color-main-gray: #e5e7eb;
+  --color-brown-col: #5C3200;
+}
+
+/*Animations*/
+/*Modal Animations*/
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -130,6 +129,26 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Review (Carousel) Animations */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+@keyframes scroll-right {
+  0% {
+    transform: translateX(-33.333%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Modal CSS */
 .modal {
   display: flex;
   justify-content: center;
@@ -142,10 +161,6 @@ h1, h2, h3, h4, h5, h6 {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
   animation: fadeIn 0.3s ease-out;
-}
-
-.modal.modal-closing {
-  animation: fadeOut 0.3s ease-out;
 }
 
 .pet-modal-container {
@@ -165,10 +180,6 @@ h1, h2, h3, h4, h5, h6 {
   animation: modalSlideUp 0.3s ease-out;
 }
 
-.pet-modal-container.modal-content-closing {
-  animation: modalSlideDown 0.3s ease-out;
-}
-
 .modal-container {
   display: flex;
   flex-direction: column;
@@ -186,17 +197,13 @@ h1, h2, h3, h4, h5, h6 {
   animation: modalSlideUp 0.3s ease-out;
 }
 
-.modal-container.modal-content-closing {
-  animation: modalSlideDown 0.3s ease-out;
-}
-
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
 
   .close-btn {
-    color: #1e2939;
+    color: var(--color-main-black);
     cursor: pointer;
     border-radius: 8px;
   }
@@ -213,23 +220,14 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-  .close-btn {
-    color: #1e2939;
-    cursor: pointer;
-    border-radius: 24px;
-  }
-
-  .close-btn:hover {
-    background-color: #f0f0f0;
-  }
-
+/* Modal Form */
 .modal-form {
   display:flex;
   flex-direction: column;
   gap: 8px;
 
   button {
-    background-color: #F94F46;
+    background-color: var(--color-primary-col);
     color: #FFFFFF;
     padding: 8px;
     border-radius: 24px;
@@ -238,7 +236,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   button:hover {
-    background-color: #fa281d;
+    background-color: var(--color-primary-accent);
   }
 }
 
@@ -275,10 +273,76 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+  .close-btn {
+    color: var(--color-main-black);
+    cursor: pointer;
+    border-radius: 24px;
+  }
+
+  .close-btn:hover {
+    background-color: #f0f0f0;
+  }
+
+/* Navbar CSS */
+.navbar {
+  .icons {
+    color: var(--color-main-black);
+    font-size: 32px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 8px;
+  }
+
+  .icons:hover {
+    color: var(--color-secondary-col);
+  }
+}
+
+.nav-item {
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 8px;
+  color: var(--color-main-black);
+}
+
+.nav-item:hover {
+  color: var(--color-secondary-accent);
+}
+
 /* Home CSS */
+.section-header{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+
+  .section-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 60px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+
+    .icons {
+      color: var(--color-main-black);
+      font-size: 48px;
+    }
+  }
+  
+  p {
+    font-size: 18px;
+    text-align: center;
+    width: 500px;
+  }
+}
 
 .btn {
-  background-color: #F94F46;
+  background-color: var(--color-primary-col);
   color: #FFFFFF;
   padding: 12px 24px;
   border-radius: 24px;
@@ -289,27 +353,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn:hover {
-  background-color: #fa281d;
+  background-color: var(--color-primary-accent);
 }
 
-/* Carousel animations */
-@keyframes scroll-left {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-33.333%);
-  }
-}
-
-@keyframes scroll-right {
-  0% {
-    transform: translateX(-33.333%);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
+/* Review (Carousel) CSS */
 
 .carousel-left {
   animation: scroll-left 40s linear infinite;
@@ -330,56 +377,6 @@ h1, h2, h3, h4, h5, h6 {
   animation-play-state: paused;
 }
 
-.section-header{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  .section-title {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    font-size: 60px;
-    font-weight: 700;
-
-    .icons {
-      color: #1e2939;
-      font-size: 48px;
-    }
-  }
-  
-  p {
-    font-size: 18px;
-    text-align: center;
-    width: 500px;
-  }
-}
-
-.nav-item {
-  font-weight: 500;
-  padding: 4px 8px;
-  cursor: pointer;
-  border-radius: 8px;
-}
-
-.nav-item:hover {
-  color: #12585e;
-}
-
-.icons {
-  color: #1e2939;
-  font-size: 32px;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 8px;
-}
-
-.icons:hover {
-  color: #12585e;
-  background-color: #e1feff;
-}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

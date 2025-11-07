@@ -10,6 +10,7 @@ type Pet = {
     id: number;
     name: string;
     breed: string;
+    type: string;
     sex: string;
     age: number;
     location: string;
@@ -30,7 +31,6 @@ type PetCardProps = {
 function PetCard({ pet, onClick, onEdit, onDelete }: PetCardProps) {
     const pathname = usePathname();
     const isAdmin = pathname.includes('/admin');
-
     const traits: string[] = Array.isArray(pet.traits)
         ? pet.traits
         : typeof pet.traits === 'string'
@@ -42,7 +42,7 @@ function PetCard({ pet, onClick, onEdit, onDelete }: PetCardProps) {
 
     return (
         <div
-            className="flex min-h-[372px] w-72 cursor-pointer flex-col justify-between rounded-xl border-3 border-gray-200 bg-white p-4 duration-300 hover:scale-105 hover:shadow-lg"
+            className="border-main-gray flex min-h-[23.25rem] w-72 cursor-pointer flex-col justify-between rounded-xl border-3 bg-white p-4 duration-300 hover:scale-105 hover:shadow-lg"
             onClick={onClick}
         >
             <div className="relative min-h-38 w-full overflow-hidden rounded-lg">
@@ -70,7 +70,7 @@ function PetCard({ pet, onClick, onEdit, onDelete }: PetCardProps) {
                                     className=""
                                     aria-label="Edit"
                                 >
-                                    <FiEdit className="h-6 w-6 cursor-pointer rounded-sm p-1 text-blue-900 hover:bg-blue-200" />
+                                    <FiEdit className="h-6 w-6 cursor-pointer rounded-sm p-1 text-blue-900 hover:bg-blue-100" />
                                 </button>
                                 <button
                                     type="button"
@@ -81,15 +81,15 @@ function PetCard({ pet, onClick, onEdit, onDelete }: PetCardProps) {
                                     className=""
                                     aria-label="Delete"
                                 >
-                                    <FaRegTrashAlt className="h-6 w-6 cursor-pointer rounded-sm p-1 text-red-900 hover:bg-red-200" />
+                                    <FaRegTrashAlt className="h-6 w-6 cursor-pointer rounded-sm p-1 text-red-900 hover:bg-red-100" />
                                 </button>
                             </div>
                         )}
                     </div>
-                    <h2 className="text-sm text-gray-400">{pet.breed}</h2>
+                    <h2 className="text-sm !text-gray-400">{pet.breed}</h2>
                 </div>
                 {!isAdmin && (
-                    <span className="min-h-fit min-w-fit">
+                    <div className="min-h-fit min-w-fit">
                         <IoPaw
                             className="h-8 w-8 rounded-lg p-1"
                             style={{
@@ -97,15 +97,15 @@ function PetCard({ pet, onClick, onEdit, onDelete }: PetCardProps) {
                                 color: pet.primaryCol,
                             }}
                         />
-                    </span>
+                    </div>
                 )}
             </div>
-            <p className="h-[64px] overflow-hidden text-sm leading-normal">
+            <p className="h-[4rem] overflow-hidden text-sm leading-normal">
                 {pet.description}
             </p>
-            <div className="flex w-[251px] flex-row gap-2 overflow-hidden pt-2">
+            <div className="flex w-[15.688rem] flex-row gap-2 overflow-hidden pt-2">
                 {traits.slice(0, 3).map((trait, index) => (
-                    <span
+                    <div
                         key={`${trait}-${index}`}
                         className="rounded-full px-3 py-1 text-xs"
                         style={{
@@ -114,7 +114,7 @@ function PetCard({ pet, onClick, onEdit, onDelete }: PetCardProps) {
                         }}
                     >
                         {trait}
-                    </span>
+                    </div>
                 ))}
             </div>
         </div>

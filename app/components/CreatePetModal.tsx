@@ -13,12 +13,14 @@ export default function CreatePetModal({
     onClose,
     onPetCreated,
 }: CreateModalProps) {
+    // States for form handling
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string>('');
     const [formData, setFormData] = useState({
         name: '',
         breed: '',
+        type: '',
         location: '',
         sex: '',
         age: '',
@@ -29,10 +31,8 @@ export default function CreatePetModal({
         traits: '',
     });
 
-    const handleClose = () => {
-        onClose?.();
-    };
-
+    // Functions
+    // Functions for form handling
     const handleInputChange = (
         e: React.ChangeEvent<
             HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -91,6 +91,7 @@ export default function CreatePetModal({
                 formDataUpload.append('file', selectedFile);
                 formDataUpload.append('name', formData.name);
                 formDataUpload.append('breed', formData.breed);
+                formDataUpload.append('type', formData.type);
                 formDataUpload.append('sex', formData.sex);
                 formDataUpload.append('age', formData.age);
                 formDataUpload.append('location', formData.location);
@@ -129,6 +130,11 @@ export default function CreatePetModal({
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    // Close modal handler
+    const handleClose = () => {
+        onClose?.();
     };
 
     return (
@@ -218,11 +224,23 @@ export default function CreatePetModal({
                                     required
                                 />
                             </div>
+                            <div className="input-group">
+                                <label>Type</label>
+                                <input
+                                    className="input-field"
+                                    type="text"
+                                    name="type"
+                                    value={formData.type}
+                                    onChange={handleInputChange}
+                                    placeholder="Enter pet's type"
+                                    required
+                                />
+                            </div>
                         </div>
                         <div className="input-group">
                             <label>Pet's Image</label>
                             <div
-                                className="flex h-32 w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 transition-colors hover:border-gray-400"
+                                className="border-main-gray flex h-32 w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors hover:border-gray-400"
                                 onClick={handleImageContainerClick}
                             >
                                 {imagePreview ? (
@@ -238,9 +256,9 @@ export default function CreatePetModal({
                                         <div className="text-gray-400">
                                             <AiOutlineCloudUpload className="h-12 w-12" />
                                         </div>
-                                        <span className="text-sm text-gray-500">
+                                        <div className="text-sm text-gray-500">
                                             Click to upload image
-                                        </span>
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -277,9 +295,9 @@ export default function CreatePetModal({
                         <div className="input-group">
                             <div className="flex flex-row items-center gap-2">
                                 <label>Personality</label>
-                                <span className="text-xs text-gray-400">
+                                <div className="text-xs text-gray-400">
                                     (Max: 12 Traits)
-                                </span>
+                                </div>
                             </div>
                             <input
                                 className="input-field"
@@ -293,9 +311,9 @@ export default function CreatePetModal({
                         <div className="input-group">
                             <div className="flex flex-row items-center gap-2">
                                 <label>Description</label>
-                                <span className="text-xs text-gray-400">
+                                <div className="text-xs text-gray-400">
                                     (Max: 320 characters)
-                                </span>
+                                </div>
                             </div>
 
                             <textarea

@@ -1,28 +1,35 @@
 'use client';
 
-import PetCard from '../components/PetCard';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { Adopt } from '@prisma/client';
-import { IoIosArrowRoundBack } from 'react-icons/io';
-import { FiSearch } from 'react-icons/fi';
+// Components
 import Image from 'next/image';
+import PetCard from '../components/PetCard';
 import ReviewCard from '../components/ReviewCard';
 import AdoptModal from '../components/AdoptModal';
 import ReviewModal from '../components/ReviewModal';
 import CreatePetModal from '../components/CreatePetModal';
 import UpdatePetModal from '../components/UpdatePetModal';
 import ViewPetModal from '../components/ViewPetModal';
-import { ConfettiFireworks } from '@/components/ui/confetti';
 import ThankYouModal from '../components/ThankYouModal';
-import { FaPlus } from 'react-icons/fa6';
+import { ConfettiFireworks } from '@/components/ui/confetti';
+
+// Hooks and Utilities
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+
+// Types
+import { Adopt } from '@prisma/client';
+
+// Icons
+import { IoIosArrowRoundBack } from 'react-icons/io';
+import { FiSearch } from 'react-icons/fi';
+import { FaPlus } from 'react-icons/fa6';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 
 type Pet = {
     id: number;
     name: string;
     breed: string;
+    type: string;
     sex: string;
     age: number;
     location: string;
@@ -35,24 +42,32 @@ type Pet = {
 };
 
 export default function PetsPage() {
-    const [pets, setPets] = useState<Pet[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [openViewPetModal, setOpenViewPetModal] = useState(false);
+    // State //
+    // Modal States
     const [openCreatePetModal, setOpenCreatePetModal] = useState(false);
+    const [openViewPetModal, setOpenViewPetModal] = useState(false);
     const [openUpdatePetModal, setOpenUpdatePetModal] = useState(false);
-    const [openAdoptModal, setOpenAdoptModal] = useState(false);
     const [openReviewModal, setOpenReviewModal] = useState(false);
+    const [openAdoptModal, setOpenAdoptModal] = useState(false);
+    const [openThankYouModal, setOpenThankYouModal] = useState(false);
+
+    // Data States
+    const [pets, setPets] = useState<Pet[]>([]);
     const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
     const [adoptedData, setAdoptedData] = useState<Adopt[]>([]);
-    const [openThankYouModal, setOpenThankYouModal] = useState(false);
+
+    // Loading, Navigation, and Search States
+    const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
 
-    const PETS_PER_PAGE = 5;
-
+    // Constants //
+    const PETS_PER_PAGE = 12;
     const pathname = usePathname();
     const isAdmin = pathname.includes('/admin');
 
+    // Effects //
+    // Fetch pets and adopted data on component mount
     useEffect(() => {
         const fetchPets = async () => {
             try {
@@ -79,8 +94,8 @@ export default function PetsPage() {
         fetchPets();
     }, []);
 
-    if (loading) return <div>Loading...</div>;
-
+    // Functions //
+    // Functions related to pets
     const refreshPets = async () => {
         try {
             const response = await fetch('/api/pets');
@@ -117,7 +132,6 @@ export default function PetsPage() {
         refreshPets(); // Refresh the pets list to remove the adopted pet
     };
 
-    // Handle pet delete with confirmation
     const handlePetDelete = async (petId: number, petName: string) => {
         const confirmed = window.confirm(
             `Are you sure you want to delete ${petName}? This action cannot be undone.`,
@@ -134,27 +148,23 @@ export default function PetsPage() {
         }
     };
 
-    // Filter pets based on search term
     const filteredPets = pets.filter(
         (pet) =>
-            pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             pet.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            pet.location.toLowerCase().includes(searchTerm.toLowerCase()),
+            pet.type.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
-    // Calculate pagination
+    // Pagination
     const totalPages = Math.ceil(filteredPets.length / PETS_PER_PAGE);
     const startIndex = (currentPage - 1) * PETS_PER_PAGE;
     const endIndex = startIndex + PETS_PER_PAGE;
     const currentPets = filteredPets.slice(startIndex, endIndex);
 
-    // Handle page change
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Generate page numbers
     const getPageNumbers = () => {
         const pageNumbers = [];
         const maxVisiblePages = 5;
@@ -181,6 +191,8 @@ export default function PetsPage() {
         return pageNumbers;
     };
 
+    if (loading) return <div>Loading...</div>;
+
     return (
         <div className="flex flex-col items-center justify-center gap-12 pt-12 pb-12">
             <div className="flex w-full max-w-310 flex-row items-center justify-between">
@@ -191,7 +203,7 @@ export default function PetsPage() {
                     <h1 className="text-5xl font-bold">ADOPT A PET</h1>
                 </div>
                 <div className="flex flex-row items-center justify-center gap-2">
-                    <div className="flex w-100 flex-row items-center justify-start gap-2 rounded-sm border-2 border-gray-300 bg-white px-4 py-[6px] text-sm hover:cursor-pointer">
+                    <div className="border-main-gray flex w-100 flex-row items-center justify-start gap-2 rounded-sm border-2 bg-white px-4 py-[0.5rem] text-sm hover:cursor-pointer">
                         <FiSearch className="h-4 w-4" />
                         <input
                             type="text"
@@ -199,7 +211,7 @@ export default function PetsPage() {
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
-                                setCurrentPage(1); // Reset to first page when searching
+                                setCurrentPage(1);
                             }}
                             className="w-full border-none outline-none"
                         />
@@ -209,12 +221,12 @@ export default function PetsPage() {
                             onClick={() => setOpenCreatePetModal(true)}
                             className=""
                         >
-                            <FaPlus className="h-9 w-9 cursor-pointer rounded-sm border-2 border-gray-300 bg-white p-2 hover:scale-110 hover:bg-gray-100" />
+                            <FaPlus className="border-main-gray h-9 w-9 cursor-pointer rounded-sm border-2 bg-white p-2 hover:scale-110 hover:bg-gray-100" />
                         </button>
                     )}
                 </div>
             </div>
-            <div className="flex min-h-[600px] max-w-360 flex-wrap justify-center gap-8">
+            <div className="flex max-w-360 flex-wrap justify-center gap-8">
                 {currentPets.length > 0 ? (
                     currentPets.map((pet) => (
                         <PetCard
@@ -251,8 +263,8 @@ export default function PetsPage() {
                         disabled={currentPage === 1}
                         className={`flex h-10 w-10 items-center justify-center rounded-lg border-2 transition-colors ${
                             currentPage === 1
-                                ? 'cursor-not-allowed border-gray-300 text-gray-400'
-                                : 'border-gray-300 text-gray-700 hover:border-[#21A0AA] hover:bg-[#21A0AA]'
+                                ? 'border-main-gray cursor-not-allowed text-gray-400'
+                                : 'border-main-gray hover:border-secondary-col hover:bg-secondary-col cursor-pointer text-gray-700'
                         }`}
                     >
                         <IoChevronBack className="h-5 w-5 hover:text-white" />
@@ -265,8 +277,8 @@ export default function PetsPage() {
                             onClick={() => handlePageChange(pageNum)}
                             className={`flex h-10 w-10 items-center justify-center rounded-lg border-2 transition-colors ${
                                 currentPage === pageNum
-                                    ? 'border-[#21A0AA] bg-[#21A0AA] text-white'
-                                    : 'border-gray-300 text-gray-700 hover:border-[#21A0AA] hover:bg-[#21A0AA] hover:text-white'
+                                    ? 'border-secondary-col bg-secondary-col text-white'
+                                    : 'border-main-gray hover:border-secondary-col hover:bg-secondary-col cursor-pointer text-gray-700 hover:text-white'
                             }`}
                         >
                             {pageNum}
@@ -279,8 +291,8 @@ export default function PetsPage() {
                         disabled={currentPage === totalPages}
                         className={`flex h-10 w-10 items-center justify-center rounded-lg border-2 transition-colors ${
                             currentPage === totalPages
-                                ? 'cursor-not-allowed border-gray-300 text-gray-400'
-                                : 'border-gray-300 text-gray-700 hover:border-[#21A0AA] hover:bg-[#21A0AA]'
+                                ? 'border-main-gray cursor-not-allowed text-gray-400'
+                                : 'border-main-gray hover:border-secondary-col hover:bg-secondary-col cursor-pointer text-gray-700'
                         }`}
                     >
                         <IoChevronForward className="h-5 w-5 hover:text-white" />

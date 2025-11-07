@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
     title: 'FurEverHome',
     description: 'Home for every furry friend',
+    icons: {
+        icon: '/paw.svg',
+    },
 };
 
 export default function RootLayout({

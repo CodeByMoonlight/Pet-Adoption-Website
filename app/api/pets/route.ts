@@ -50,6 +50,7 @@ export async function POST(request: NextRequest) {
             petData = {
                 name: formData.get('name') as string,
                 breed: formData.get('breed') as string,
+                type: formData.get('type') as string,
                 sex: formData.get('sex') as string,
                 age: parseInt(formData.get('age') as string),
                 location: formData.get('location') as string,
@@ -69,6 +70,7 @@ export async function POST(request: NextRequest) {
             data: {
                 name: petData.name,
                 breed: petData.breed,
+                type: petData.type.toLowerCase(),
                 sex: petData.sex,
                 age: petData.age,
                 location: petData.location,
@@ -125,7 +127,7 @@ export async function PATCH(request: NextRequest) {
             // Extract other form data
             petId = parseInt(formData.get('id') as string);
             
-            const fields = ['name', 'breed', 'sex', 'age', 'location', 'description', 'traits', 'primaryCol', 'accentCol', 'isLiked'];
+            const fields = ['name', 'breed', 'type', 'sex', 'age', 'location', 'description', 'traits', 'primaryCol', 'accentCol', 'isLiked'];
             fields.forEach(field => {
                 const value = formData.get(field);
                 if (value !== null) {
@@ -145,7 +147,7 @@ export async function PATCH(request: NextRequest) {
             petId = body.id;
 
             // Build update object with only provided fields
-            const fields = ['name', 'breed', 'sex', 'age', 'location', 'description', 'image', 'traits', 'primaryCol', 'accentCol', 'isLiked'];
+            const fields = ['name', 'breed', 'type', 'sex', 'age', 'location', 'description', 'image', 'traits', 'primaryCol', 'accentCol', 'isLiked'];
             fields.forEach(field => {
                 if (body[field] !== undefined) {
                     updateData[field] = body[field];

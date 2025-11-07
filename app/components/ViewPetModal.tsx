@@ -10,6 +10,7 @@ type Pet = {
     id: number;
     name: string;
     breed: string;
+    type: string;
     sex: string;
     age: number;
     location: string;
@@ -34,18 +35,23 @@ export default function ViewPetModal({
     onPetUpdate,
     onAdopt,
 }: ViewModalProps) {
+    // States for like button
     const [isLiked, setIsLiked] = useState(pet.isLiked || false);
     const [isHovered, setIsHovered] = useState(false);
 
+    // Effects //
     // Reset isLiked when pet changes
     useEffect(() => {
         setIsLiked(pet.isLiked || false);
     }, [pet.id, pet.isLiked]);
 
+    //Functions//
+    // Close modal handler
     const handleClose = () => {
         onClose?.();
     };
 
+    // Like button handler
     const handleLikeToggle = async () => {
         const newLikedState = !isLiked;
         setIsLiked(newLikedState);
@@ -78,6 +84,7 @@ export default function ViewPetModal({
         }
     };
 
+    // Parse traits into array
     const traits: string[] = Array.isArray(pet.traits)
         ? pet.traits
         : typeof pet.traits === 'string'
@@ -93,7 +100,7 @@ export default function ViewPetModal({
                 className="pet-modal-container"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="relative w-1/2 overflow-hidden rounded-lg">
+                <div className="relative w-2/5 overflow-hidden rounded-lg px-36">
                     <Image
                         src={pet.image}
                         alt={pet.name}
@@ -103,9 +110,9 @@ export default function ViewPetModal({
                         priority
                     />
                 </div>
-                <div className="flex w-1/2 flex-col gap-4">
+                <div className="flex w-3/5 flex-col gap-4">
                     <div className="modal-header">
-                        <div className="">
+                        <div>
                             <div className="flex flex-row items-center gap-2">
                                 <h1 className="pb-1 text-4xl font-bold">
                                     {pet.name}
@@ -138,14 +145,14 @@ export default function ViewPetModal({
                             <IoIosClose className="close-btn h-8 w-8" />
                         </button>
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-1">
                             <h2 className="text-xl font-bold">ABOUT</h2>
-                            <p className="text-sm leading-normal">
+                            <p className="text-base leading-normal">
                                 {pet.description}
                             </p>
                         </div>
-                        <div className="flex flex-col gap-1">
+                        <div className="flex flex-col gap-2">
                             <h2 className="text-xl font-bold">PERSONALITY</h2>
                             <div className="flex flex-wrap gap-2">
                                 {traits.map((trait, index) => (
@@ -168,7 +175,7 @@ export default function ViewPetModal({
                             handleClose();
                             onAdopt?.();
                         }}
-                        className="w-full cursor-pointer rounded-3xl bg-[#F94F46] p-2 text-[#FFFFFF] hover:bg-[#fa281d]"
+                        className="btn"
                     >
                         Adopt {pet.name}
                     </button>
