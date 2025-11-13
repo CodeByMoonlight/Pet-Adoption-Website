@@ -97,10 +97,10 @@ export default function ViewPetModal({
     return (
         <div className="modal" onClick={handleClose}>
             <div
-                className="pet-modal-container"
+                className="pet-modal-container w-[26.5rem] max-w-[26.5rem] min-w-[20rem] flex-col gap-4 lg:w-[45rem] lg:max-w-[45rem] lg:min-w-[20rem] lg:flex-row lg:gap-6"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="relative w-2/5 overflow-hidden rounded-lg px-36">
+                <div className="relative h-52 w-full overflow-hidden rounded-lg px-36 lg:h-auto lg:w-2/5">
                     <Image
                         src={pet.image}
                         alt={pet.name}
@@ -110,7 +110,7 @@ export default function ViewPetModal({
                         priority
                     />
                 </div>
-                <div className="flex w-3/5 flex-col gap-4">
+                <div className="flex w-full flex-col gap-4 lg:w-3/5">
                     <div className="modal-header">
                         <div>
                             <div className="flex flex-row items-center gap-2">

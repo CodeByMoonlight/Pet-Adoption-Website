@@ -218,15 +218,17 @@ export default function PetsPage() {
                     onComplete={handleLoadingComplete}
                 />
             )}
-            <div className="flex w-full max-w-310 flex-row items-center justify-between">
+            <div className="flex w-full max-w-310 flex-col items-center justify-between gap-3 sm:flex-row sm:gap-0">
                 <div className="flex flex-row items-center justify-center gap-2">
                     <a href="/">
                         <IoIosArrowRoundBack className="h-12 w-12 cursor-pointer hover:scale-110" />
                     </a>
-                    <h1 className="text-5xl font-bold">ADOPT A PET</h1>
+                    <h1 className="text-4xl font-bold lg:text-5xl">
+                        ADOPT A PET
+                    </h1>
                 </div>
                 <div className="flex flex-row items-center justify-center gap-2">
-                    <div className="border-main-gray flex w-100 flex-row items-center justify-start gap-2 rounded-lg border-2 bg-white px-4 py-[0.5rem] text-sm hover:cursor-pointer">
+                    <div className="border-main-gray flex w-76 flex-row items-center justify-start gap-2 rounded-lg border-2 bg-white px-4 py-[0.5rem] text-sm hover:cursor-pointer sm:w-100">
                         <FiSearch className="h-4 w-4" />
                         <input
                             type="text"
