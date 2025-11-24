@@ -234,16 +234,16 @@ export default function UpdatePetModal({
                                 />
                             </div>
                             <div className="input-group">
-                                <label>Age</label>
+                                <label>Age (in months)</label>
                                 <input
                                     className="input-field"
                                     type="number"
                                     name="age"
                                     value={formData.age}
                                     onChange={handleInputChange}
-                                    placeholder="Enter pet's age"
+                                    placeholder="Enter pet's age in months"
                                     min="0"
-                                    max="30"
+                                    max="360"
                                     required
                                 />
                             </div>

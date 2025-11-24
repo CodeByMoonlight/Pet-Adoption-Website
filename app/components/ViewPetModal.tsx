@@ -6,6 +6,20 @@ import { AiFillHeart } from 'react-icons/ai';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { useState, useEffect } from 'react';
 
+// Utility function to format age from months
+const formatAge = (ageInMonths: number): string => {
+    if (ageInMonths < 12) {
+        return `${ageInMonths} ${ageInMonths === 1 ? 'month' : 'months'} old`;
+    }
+    const years = Math.floor(ageInMonths / 12);
+    const remainingMonths = ageInMonths % 12;
+
+    if (remainingMonths === 0) {
+        return `${years} ${years === 1 ? 'year' : 'years'} old`;
+    }
+    return `${years} ${years === 1 ? 'year' : 'years'} and ${remainingMonths} ${remainingMonths === 1 ? 'month' : 'months'} old`;
+};
+
 type Pet = {
     id: number;
     name: string;
@@ -136,7 +150,7 @@ export default function ViewPetModal({
                                 <span> | </span>
                                 <span>{pet.sex}</span>
                                 <span> | </span>
-                                <span>{pet.age} years old</span>
+                                <span>{formatAge(pet.age)}</span>
                                 <span> | </span>
                                 <span>{pet.location}</span>
                             </div>
