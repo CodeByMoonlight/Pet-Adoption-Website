@@ -106,7 +106,7 @@ export default function ReviewModal({ onClose }: ReviewModalProps) {
                     <div className="">
                         <h1 className="pb-1 text-4xl font-bold">REVIEW</h1>
                         <p className="text-sm">
-                            We'd love to hear what you think
+                            We&apos;d love to hear what you think
                         </p>
                     </div>
                     <button className="" onClick={handleClose}>
@@ -129,7 +129,7 @@ export default function ReviewModal({ onClose }: ReviewModalProps) {
                         </div>
                         <div className="input-group-div">
                             <div className="input-group">
-                                <label>Pet's Name</label>
+                                <label>Pet&apos;s Name</label>
                                 <input
                                     className="input-field"
                                     type="text"
@@ -141,7 +141,7 @@ export default function ReviewModal({ onClose }: ReviewModalProps) {
                                 />
                             </div>
                             <div className="input-group">
-                                <label>Pet's Image</label>
+                                <label>Pet&apos;s Image</label>
                                 <input
                                     id="file-input"
                                     type="file"

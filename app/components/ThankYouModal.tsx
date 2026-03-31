@@ -38,9 +38,9 @@ export default function ThankYouModal({ onClose }: ThankYouModalProps) {
                         Thank You for Giving Me a Loving Home!
                     </h1>
                     <p className="text-center text-sm leading-normal">
-                        I've been waiting for someone just like you. Thank you
-                        for giving me a second chance and a place where I
-                        belong. I can't wait to start our new adventure
+                        I&apos;ve been waiting for someone just like you. Thank
+                        you for giving me a second chance and a place where I
+                        belong. I can&apos;t wait to start our new adventure
                         together.
                     </p>
                 </div>

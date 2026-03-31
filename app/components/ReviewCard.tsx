@@ -18,7 +18,7 @@ type ReviewCardProps = {
 
 export default function ReviewCard({ review }: ReviewCardProps) {
     return (
-        <div className="border-main-gray relative h-[22.625rem] w-72 rounded-xl border-3 duration-300 hover:scale-105 hover:shadow-lg">
+        <div className="border-main-gray relative h-96 w-72 rounded-xl border-2 duration-300 hover:scale-105 hover:shadow-lg">
             <div className="relative h-full w-full overflow-hidden rounded-lg">
                 <Image
                     src={review.img}
@@ -29,9 +29,9 @@ export default function ReviewCard({ review }: ReviewCardProps) {
                     priority
                 />
             </div>
-            <div className="absolute top-0 left-0 flex h-full w-full flex-col justify-end gap-2 rounded-lg bg-gradient-to-b from-transparent via-white/24 to-white p-4">
+            <div className="absolute top-0 left-0 flex h-full w-full flex-col justify-end gap-2 rounded-lg bg-linear-to-b from-transparent via-white/24 to-white p-4">
                 <RiDoubleQuotesL className="text-main-black h-6 w-6" />
-                <p className="h-16 text-sm">{review.review}</p>
+                <p className="line-clamp-3">{review.review}</p>
                 <p className="text-right text-sm">-{review.name}</p>
             </div>
         </div>

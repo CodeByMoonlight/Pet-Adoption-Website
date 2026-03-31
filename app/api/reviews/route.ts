@@ -3,6 +3,14 @@ import { prisma } from '@/lib/prisma';
 import { writeFile } from 'fs/promises';
 import path from 'path';
 
+type ReviewPayload = {
+    name: string;
+    petName: string;
+    rating: number;
+    review?: string;
+    img?: string;
+};
+
 // GET /api/reviews - Get all reviews
 export async function GET() {
     try {
@@ -26,7 +34,7 @@ export async function POST(request: NextRequest) {
     try {
         const contentType = request.headers.get('content-type');
         let imageUrl = '';
-        let reviewData: any = {};
+        let reviewData: ReviewPayload;
 
         // Handle multipart/form-data (file upload)
         if (contentType?.includes('multipart/form-data')) {
@@ -51,11 +59,11 @@ export async function POST(request: NextRequest) {
                 name: formData.get('name') as string,
                 petName: formData.get('petName') as string,
                 rating: parseInt(formData.get('rating') as string),
-                review: formData.get('review') as string,
+                review: (formData.get('review') as string) || '',
             };
         } else {
             // Handle JSON data (URL-based image)
-            const body = await request.json();
+            const body = (await request.json()) as ReviewPayload;
             reviewData = body;
             imageUrl = body.img || '';
         }

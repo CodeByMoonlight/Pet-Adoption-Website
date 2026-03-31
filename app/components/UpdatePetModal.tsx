@@ -261,7 +261,7 @@ export default function UpdatePetModal({
                             </div>
                         </div>
                         <div className="input-group">
-                            <label>Pet's Image</label>
+                            <label>Pet&apos;s Image</label>
                             <div
                                 className="border-main-gray flex h-32 w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors hover:border-gray-400"
                                 onClick={handleImageContainerClick}

@@ -42,10 +42,10 @@ function PetCard({ pet, onClick, onEdit, onDelete }: PetCardProps) {
 
     return (
         <div
-            className="border-main-gray flex min-h-[23.25rem] w-72 cursor-pointer flex-col justify-between rounded-xl border-3 bg-white p-4 duration-300 hover:scale-105 hover:shadow-lg"
+            className="border-main-gray flex min-h-100 w-80 cursor-pointer flex-col justify-between rounded-xl border bg-white p-4 drop-shadow-lg drop-shadow-gray-200 duration-300 hover:scale-105 hover:shadow-lg"
             onClick={onClick}
         >
-            <div className="relative min-h-38 w-full overflow-hidden rounded-lg">
+            <div className="relative min-h-46 w-full overflow-hidden rounded-lg">
                 <Image
                     src={pet.image}
                     alt={pet.name}
@@ -86,7 +86,7 @@ function PetCard({ pet, onClick, onEdit, onDelete }: PetCardProps) {
                             </div>
                         )}
                     </div>
-                    <h2 className="text-sm !text-gray-400">{pet.breed}</h2>
+                    <h2 className="text-sm text-gray-400!">{pet.breed}</h2>
                 </div>
                 {!isAdmin && (
                     <div className="min-h-fit min-w-fit">
@@ -100,7 +100,7 @@ function PetCard({ pet, onClick, onEdit, onDelete }: PetCardProps) {
                     </div>
                 )}
             </div>
-            <p className="h-[4rem] overflow-hidden text-sm leading-normal">
+            <p className="line-clamp-3 truncate overflow-hidden leading-normal">
                 {pet.description}
             </p>
             <div className="flex w-[15.688rem] flex-row gap-2 overflow-hidden pt-2">

@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { writeFile } from 'fs/promises';
-import path from 'path';
 
 // GET /api/adopt - Get all adoptions
 export async function GET() {
@@ -24,9 +22,6 @@ export async function GET() {
 // POST /api/adopt - Create a new adopt
 export async function POST(request: NextRequest) {
     try {
-        const contentType = request.headers.get('content-type');
-        let imageUrl = '';
-
         const body = await request.json();
         const adopt = await prisma.adopt.create({
             data: {

@@ -15,6 +15,7 @@ import AudioPlayer from '../components/AudioPlayer';
 // Hooks and Utilities
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 // Types
 import { Adopt } from '@prisma/client';
@@ -211,24 +212,24 @@ export default function PetsPage() {
     if (loading) return <div></div>;
 
     return (
-        <div className="flex flex-col items-center justify-center gap-12 pt-12 pb-12">
+        <div className="grid grid-cols-[1fr_minmax(2rem,86rem)_1fr] gap-12 pt-12 pb-12">
             {showLoading && (
                 <Loading
                     isDataLoading={loading}
                     onComplete={handleLoadingComplete}
                 />
             )}
-            <div className="flex w-full max-w-310 flex-col items-center justify-between gap-3 sm:flex-row sm:gap-0">
+            <div className="b col-start-2 col-end-3 flex w-full flex-col items-center justify-between gap-3 sm:flex-row sm:gap-0">
                 <div className="flex flex-row items-center justify-center gap-2">
-                    <a href="/">
+                    <Link href="/">
                         <IoIosArrowRoundBack className="h-12 w-12 cursor-pointer hover:scale-110" />
-                    </a>
+                    </Link>
                     <h1 className="text-4xl font-bold lg:text-5xl">
                         ADOPT A PET
                     </h1>
                 </div>
                 <div className="flex flex-row items-center justify-center gap-2">
-                    <div className="border-main-gray flex w-76 flex-row items-center justify-start gap-2 rounded-lg border-2 bg-white px-4 py-[0.5rem] text-sm hover:cursor-pointer sm:w-100">
+                    <div className="border-main-gray flex w-76 flex-row items-center justify-start gap-2 rounded-lg border-2 bg-white px-4 py-2 text-sm hover:cursor-pointer sm:w-100">
                         <FiSearch className="h-4 w-4" />
                         <input
                             type="text"
@@ -251,7 +252,7 @@ export default function PetsPage() {
                     )}
                 </div>
             </div>
-            <div className="flex max-w-360 flex-wrap justify-center gap-8">
+            <div className="col-start-2 col-end-3 flex flex-wrap justify-center gap-8">
                 {currentPets.length > 0 ? (
                     currentPets.map((pet) => (
                         <PetCard
@@ -281,7 +282,7 @@ export default function PetsPage() {
 
             {/* Pagination */}
             {filteredPets.length > PETS_PER_PAGE && (
-                <div className="mt-8 flex items-center justify-center gap-2">
+                <div className="col-start-2 col-end-3 mt-8 flex items-center justify-center gap-2">
                     {/* Previous button */}
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}
@@ -367,7 +368,7 @@ export default function PetsPage() {
 
             {openThankYouModal && (
                 <>
-                    <div className="pointer-events-none fixed inset-0 z-[9999]">
+                    <div className="pointer-events-none fixed inset-0 z-9999">
                         <ConfettiFireworks />
                     </div>
                     <ThankYouModal

@@ -46,9 +46,7 @@ export default function AdoptModal({
         setIsSubmitting(true);
 
         try {
-            let response;
-
-            response = await fetch('/api/adopt', {
+            const response = await fetch('/api/adopt', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

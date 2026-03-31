@@ -106,6 +106,15 @@ export default function Home() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // Lock body scroll while mobile menu is open for smoother UX
+    useEffect(() => {
+        document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isMobileMenuOpen]);
+
     // Fetch Pets and Adopted Data
     useEffect(() => {
         const fetchPets = async () => {
@@ -248,38 +257,38 @@ export default function Home() {
                 />
             )}
             <nav
-                className={`navbar fixed top-0 right-0 left-0 z-10 mx-2! flex flex-row items-center justify-between rounded-2xl bg-white/60 p-2 backdrop-blur-sm transition-transform duration-300 sm:mx-5! sm:p-3 ${showNavbar ? 'translate-y-2 sm:translate-y-5' : '-translate-y-full'}`}
+                className={`navbar fixed top-0 right-0 left-0 z-10 mx-2! flex flex-row items-center justify-between rounded-2xl bg-white/60 p-2 shadow-sm backdrop-blur-sm transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform sm:mx-5! sm:p-3 ${showNavbar ? 'translate-y-2 sm:translate-y-5' : '-translate-y-full'}`}
             >
                 <div
                     className="flex flex-row items-center gap-1 hover:cursor-pointer sm:w-44 sm:gap-2"
                     onClick={scrollToTop}
                 >
-                    <IoPaw className="text-main-black h-6 w-6 p-1 sm:h-8 sm:w-8" />
-                    <p className="text-sm font-bold sm:text-xl">FurEverHome</p>
+                    <IoPaw className="text-main-black h-8 w-8 p-1" />
+                    <p className="text-xl font-bold">FurEverHome</p>
                 </div>
 
                 {/* Desktop Navigation */}
                 <div className="hidden flex-row gap-8 text-base md:flex">
                     <div
-                        className={`nav-item ${activeSection === 'home' ? '!text-secondary-accent font-bold' : ''}`}
+                        className={`nav-item ${activeSection === 'home' ? 'text-secondary-accent! font-bold' : ''}`}
                         onClick={() => scrollToSection('home')}
                     >
                         HOME
                     </div>
                     <div
-                        className={`nav-item ${activeSection === 'pets' ? '!text-secondary-accent font-bold' : ''}`}
+                        className={`nav-item ${activeSection === 'pets' ? 'text-secondary-accent! font-bold' : ''}`}
                         onClick={() => scrollToSection('pets')}
                     >
                         PETS
                     </div>
                     <div
-                        className={`nav-item ${activeSection === 'about' ? '!text-secondary-accent font-bold' : ''}`}
+                        className={`nav-item ${activeSection === 'about' ? 'text-secondary-accent! font-bold' : ''}`}
                         onClick={() => scrollToSection('about')}
                     >
                         ABOUT
                     </div>
                     <div
-                        className={`nav-item ${activeSection === 'reviews' ? '!text-secondary-accent font-bold' : ''}`}
+                        className={`nav-item ${activeSection === 'reviews' ? 'text-secondary-accent! font-bold' : ''}`}
                         onClick={() => scrollToSection('reviews')}
                     >
                         REVIEWS
@@ -306,354 +315,362 @@ export default function Home() {
 
                 {/* Mobile Hamburger Menu */}
                 <button
-                    className="rounded-lg p-2 transition-colors hover:bg-gray-100 md:hidden"
+                    className="rounded-lg p-2 transition-all duration-300 ease-out hover:bg-gray-100 md:hidden"
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     aria-label="Toggle menu"
                 >
-                    <HiMenuAlt3 className="text-main-black h-6 w-6" />
+                    <HiMenuAlt3
+                        className={`text-main-black h-6 w-6 transform transition-transform duration-300 ease-out ${isMobileMenuOpen ? 'scale-90 rotate-90' : 'scale-100 rotate-0'}`}
+                    />
                 </button>
             </nav>
 
             {/* Mobile Side Navigation */}
-            {isMobileMenuOpen && (
-                <>
-                    {/* Backdrop */}
-                    <div
-                        className="fixed inset-0 z-40 bg-black/50 md:hidden"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                    />
+            <>
+                {/* Backdrop */}
+                <div
+                    className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-[1px] transition-opacity duration-300 ease-out md:hidden ${isMobileMenuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
 
-                    {/* Side Menu */}
-                    <div className="fixed top-0 right-0 z-50 h-full w-64 transform bg-white shadow-xl transition-transform duration-300 ease-in-out md:hidden">
-                        <div className="flex h-full flex-col">
-                            {/* Header */}
-                            <div className="flex items-center justify-between border-b border-gray-200 p-4">
-                                <div className="flex items-center gap-2">
-                                    <IoPaw className="text-main-black h-6 w-6" />
-                                    <p className="text-lg font-bold">
-                                        FurEverHome
+                {/* Side Menu */}
+                <div
+                    className={`fixed top-0 right-0 z-50 h-full w-2/3 transform bg-white shadow-xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                >
+                    <div className="flex h-full flex-col">
+                        {/* Header */}
+                        <div className="flex items-center justify-end border-b border-gray-200 p-2">
+                            <button
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="rounded-lg p-2 transition-all duration-300 ease-out hover:bg-gray-100"
+                                aria-label="Close menu"
+                            >
+                                <IoClose className="text-main-black h-6 w-6" />
+                            </button>
+                        </div>
+
+                        {/* Navigation Links */}
+                        <nav className="flex flex-col gap-2 p-4">
+                            <button
+                                className={`nav-item rounded-lg px-4 py-3 text-left transition-all duration-300 ${activeSection === 'home' ? 'bg-secondary-light text-secondary-accent! font-bold' : 'hover:bg-gray-100'}`}
+                                onClick={() => handleMobileNavClick('home')}
+                            >
+                                HOME
+                            </button>
+                            <button
+                                className={`nav-item rounded-lg px-4 py-3 text-left transition-all duration-300 ${activeSection === 'pets' ? 'bg-secondary-light text-secondary-accent! font-bold' : 'hover:bg-gray-100'}`}
+                                onClick={() => handleMobileNavClick('pets')}
+                            >
+                                PETS
+                            </button>
+                            <button
+                                className={`nav-item rounded-lg px-4 py-3 text-left transition-all duration-300 ${activeSection === 'about' ? 'bg-secondary-light text-secondary-accent! font-bold' : 'hover:bg-gray-100'}`}
+                                onClick={() => handleMobileNavClick('about')}
+                            >
+                                ABOUT
+                            </button>
+                            <button
+                                className={`nav-item rounded-lg px-4 py-3 text-left transition-all duration-300 ${activeSection === 'reviews' ? 'bg-secondary-light text-secondary-accent! font-bold' : 'hover:bg-gray-100'}`}
+                                onClick={() => handleMobileNavClick('reviews')}
+                            >
+                                REVIEWS
+                            </button>
+                        </nav>
+
+                        {/* Social Links */}
+                        <div className="mt-auto border-t border-gray-200 p-4">
+                            <div className="flex gap-4">
+                                <a
+                                    href="https://github.com/CodeByMoonlight/Pet-Adoption-Website"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-secondary-accent flex items-center gap-2 transition-colors duration-300"
+                                >
+                                    <FaGithub className="h-6 w-6" />
+                                    <span className="text-sm">GitHub</span>
+                                </a>
+                                <a
+                                    href="https://www.facebook.com/pawsphilippines/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-secondary-accent flex items-center gap-2 transition-colors duration-300"
+                                >
+                                    <IoPaw className="h-6 w-6" />
+                                    <span className="text-sm">PAWS</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </>
+
+            <div className="flex w-full justify-center">
+                <main className="flex w-full max-w-fit flex-col items-center justify-center overflow-hidden">
+                    {/* Hero*/}
+                    <div
+                        id="home"
+                        className="bg-tertiary-light relative grid h-200 grid-cols-[minmax(0rem,1.5rem)_2fr_minmax(0rem,1rem)] flex-col pt-12 lg:h-250 xl:grid-cols-[minmax(0rem,9rem)_2fr_minmax(0rem,9rem)]"
+                    >
+                        <Image
+                            width={1920}
+                            height={200}
+                            src="/images/transition-cropped.svg"
+                            alt="transition_img"
+                            className="absolute bottom-0 left-0 z-2 h-auto w-full"
+                        />
+
+                        <div className="relative col-start-2 col-end-3 flex h-160 flex-col items-center justify-center md:flex-row lg:gap-16">
+                            <div className="relative order-2 flex w-full flex-col items-center text-center md:order-1 md:items-start md:text-left lg:w-1/2">
+                                <div className="flex flex-col gap-4">
+                                    <h1 className="text-4xl leading-tight font-bold md:text-5xl lg:text-6xl lg:leading-20">
+                                        Together, We Can Give Every Animal a
+                                        <span className="text-secondary-col flex flex-row justify-center gap-2 md:justify-start">
+                                            FurEverHome
+                                            <IoPaw className="text-main-black mt-2! h-6 w-6 rotate-36 sm:h-8 sm:w-8" />
+                                        </span>
+                                    </h1>
+                                    <p className="text-base leading-relaxed md:text-lg lg:text-xl lg:leading-9">
+                                        Behind every pair of hopeful eyes is a
+                                        story ready to change your life.
+                                        Discover pets looking for love and make
+                                        your home a place filled with warmth,
+                                        joy, and endless pawprints.
                                     </p>
                                 </div>
                                 <button
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="rounded-lg p-2 transition-colors hover:bg-gray-100"
-                                    aria-label="Close menu"
+                                    className="btn w-fit"
+                                    onClick={() => scrollToSection('pets')}
                                 >
-                                    <IoClose className="text-main-black h-6 w-6" />
+                                    View Pets
                                 </button>
                             </div>
 
-                            {/* Navigation Links */}
-                            <nav className="flex flex-col gap-2 p-4">
-                                <button
-                                    className={`nav-item rounded-lg px-4 py-3 text-left ${activeSection === 'home' ? 'bg-secondary-light !text-secondary-accent font-bold' : 'hover:bg-gray-100'}`}
-                                    onClick={() => handleMobileNavClick('home')}
-                                >
-                                    HOME
-                                </button>
-                                <button
-                                    className={`nav-item rounded-lg px-4 py-3 text-left ${activeSection === 'pets' ? 'bg-secondary-light !text-secondary-accent font-bold' : 'hover:bg-gray-100'}`}
-                                    onClick={() => handleMobileNavClick('pets')}
-                                >
-                                    PETS
-                                </button>
-                                <button
-                                    className={`nav-item rounded-lg px-4 py-3 text-left ${activeSection === 'about' ? 'bg-secondary-light !text-secondary-accent font-bold' : 'hover:bg-gray-100'}`}
-                                    onClick={() =>
-                                        handleMobileNavClick('about')
-                                    }
-                                >
-                                    ABOUT
-                                </button>
-                                <button
-                                    className={`nav-item rounded-lg px-4 py-3 text-left ${activeSection === 'reviews' ? 'bg-secondary-light !text-secondary-accent font-bold' : 'hover:bg-gray-100'}`}
-                                    onClick={() =>
-                                        handleMobileNavClick('reviews')
-                                    }
-                                >
-                                    REVIEWS
-                                </button>
-                            </nav>
-
-                            {/* Social Links */}
-                            <div className="mt-auto border-t border-gray-200 p-4">
-                                <div className="flex gap-4">
-                                    <a
-                                        href="https://github.com/CodeByMoonlight/Pet-Adoption-Website"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="hover:text-secondary-accent flex items-center gap-2 transition-colors"
-                                    >
-                                        <FaGithub className="h-6 w-6" />
-                                        <span className="text-sm">GitHub</span>
-                                    </a>
-                                    <a
-                                        href="https://www.facebook.com/pawsphilippines/"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="hover:text-secondary-accent flex items-center gap-2 transition-colors"
-                                    >
-                                        <IoPaw className="h-6 w-6" />
-                                        <span className="text-sm">PAWS</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </>
-            )}
-            <main className="flex flex-col items-center justify-center gap-16 overflow-hidden sm:gap-24 lg:gap-36">
-                {/* Hero*/}
-                <div
-                    id="home"
-                    className="bg-tertiary-light relative flex h-auto w-full flex-col items-center justify-center gap-8 px-4 py-16 sm:px-8 sm:py-20 lg:h-180 lg:flex-row lg:pb-36 lg:pl-20"
-                >
-                    <img
-                        src="/images/transition.svg"
-                        alt="transition_img"
-                        className="absolute top-20 left-0 z-0 h-full w-full object-cover sm:top-28 md:top-36 lg:top-46"
-                    />
-                    <div className="relative z-10 order-2 w-full max-w-2xl px-4 sm:px-0 lg:order-1 lg:w-164">
-                        <div className="flex flex-col gap-3 sm:gap-4">
-                            <h1 className="text-3xl leading-tight font-bold sm:text-4xl md:text-5xl lg:text-6xl lg:leading-18">
-                                Together, We Can Give Every Animal a{' '}
-                                <div className="text-secondary-col flex flex-row items-center gap-2 sm:gap-4">
-                                    FurEverHome
-                                    <IoPaw className="text-main-black h-6 w-6 rotate-36 sm:h-8 sm:w-8" />
-                                </div>
-                            </h1>
-                            <p className="text-sm leading-relaxed sm:text-base md:text-lg lg:text-xl lg:leading-snug">
-                                Behind every pair of hopeful eyes is a story
-                                ready to change your life. Discover pets looking
-                                for love and make your home a place filled with
-                                warmth, joy, and endless pawprints.
-                            </p>
-                        </div>
-                        <button
-                            className="btn"
-                            onClick={() => scrollToSection('pets')}
-                        >
-                            View Pets
-                        </button>
-                    </div>
-                    <div className="relative order-1 h-64 w-64 sm:h-96 sm:w-96 md:h-120 md:w-120 lg:order-2 lg:h-150 lg:w-160">
-                        <Image
-                            src="/images/hero.gif"
-                            alt="hero"
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            className="object-contain"
-                            priority
-                        />
-                    </div>
-                </div>
-
-                {/* Pet*/}
-                <div
-                    id="pets"
-                    className="flex flex-col items-center gap-6 px-4 pt-12 sm:gap-8 sm:pt-16 lg:pt-24"
-                >
-                    <ScrollReveal direction="fade" duration={1000}>
-                        <div className="section-header">
-                            <div className="section-title text-4xl sm:text-5xl lg:text-6xl">
-                                <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
-                                <h1>PETS</h1>
-                                <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
-                            </div>
-                            <p className="text-base sm:w-[31.25rem] sm:text-lg">
-                                Meet our wonderful pets! Each one has a unique
-                                charm and is ready to bring joy, warmth, and
-                                companionship into your life.
-                            </p>
-                        </div>
-                    </ScrollReveal>
-                    <div className="flex max-w-360 flex-wrap justify-center gap-4 sm:gap-6 lg:gap-8">
-                        {pets.slice(0, 8).map((pet, index) => (
-                            <ScrollReveal
-                                key={pet.id}
-                                direction="up"
-                                duration={600}
-                                delay={index * 100}
-                            >
-                                <PetCard
-                                    pet={pet}
-                                    onClick={() => {
-                                        setSelectedPet(pet);
-                                        setOpenViewPetModal(true);
-                                    }}
-                                    onEdit={() => {
-                                        setSelectedPet(pet);
-                                        setOpenUpdatePetModal(true);
-                                    }}
-                                    onDelete={() =>
-                                        handlePetDelete(pet.id, pet.name)
-                                    }
+                            <div className="relative order-1 h-full w-full md:order-2 lg:w-1/2">
+                                <Image
+                                    src="/images/hero.gif"
+                                    alt="hero"
+                                    fill
+                                    sizes="50vw"
+                                    className="object-contain"
+                                    priority
                                 />
-                            </ScrollReveal>
-                        ))}
+                            </div>
+                        </div>
                     </div>
-                    <a href="/pets" className="btn">
-                        View More
-                    </a>
-                </div>
 
-                {/* About*/}
-                <div
-                    id="about"
-                    className="bg-tertiary-light flex w-full flex-col items-center justify-center gap-8 px-4 py-8 sm:gap-10 sm:px-8 lg:flex-row lg:gap-12"
-                >
-                    <ScrollReveal
-                        direction="fade"
-                        duration={1000}
-                        className="order-2 lg:order-1"
+                    {/* Pet*/}
+                    <div
+                        id="pets"
+                        className="flex flex-col items-center gap-6 px-4 pt-12 sm:gap-8 sm:pt-16 lg:pt-24"
                     >
-                        <div className="section-header">
-                            <div className="section-title text-4xl sm:text-5xl lg:text-6xl">
-                                <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
-                                <h1>ABOUT</h1>
-                                <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
+                        <ScrollReveal direction="fade" duration={1000}>
+                            <div className="section-header">
+                                <div className="section-title text-4xl sm:text-5xl lg:text-6xl">
+                                    <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
+                                    <h1>PETS</h1>
+                                    <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
+                                </div>
+                                <p className="max-w-140 text-lg leading-8 sm:text-xl">
+                                    Meet our wonderful pets! Each one has a
+                                    unique charm and is ready to bring joy,
+                                    warmth, and companionship into your life.
+                                </p>
                             </div>
-                            <p className="text-base sm:w-[31.25rem] sm:text-lg">
-                                We're more than just an adoption center, we're a
-                                compassionate community built on love, care, and
-                                second chances. Together, we create a space
-                                where people and pets can connect, heal, and
-                                grow as family.
-                            </p>
-                            <button
-                                onClick={() => scrollToSection('reviews')}
-                                className="btn"
-                            >
-                                Check Reviews
-                            </button>
+                        </ScrollReveal>
+                        <div className="flex max-w-360 flex-wrap justify-center gap-4 sm:gap-6">
+                            {pets.slice(0, 8).map((pet, index) => (
+                                <ScrollReveal
+                                    key={pet.id}
+                                    direction="up"
+                                    duration={600}
+                                    delay={index * 100}
+                                >
+                                    <PetCard
+                                        pet={pet}
+                                        onClick={() => {
+                                            setSelectedPet(pet);
+                                            setOpenViewPetModal(true);
+                                        }}
+                                        onEdit={() => {
+                                            setSelectedPet(pet);
+                                            setOpenUpdatePetModal(true);
+                                        }}
+                                        onDelete={() =>
+                                            handlePetDelete(pet.id, pet.name)
+                                        }
+                                    />
+                                </ScrollReveal>
+                            ))}
                         </div>
-                    </ScrollReveal>
-                    <ScrollReveal
-                        direction="fade"
-                        duration={1000}
-                        className="order-1 lg:order-2"
-                    >
-                        <div className="relative h-72 w-72 sm:h-120 sm:w-120 lg:h-140 lg:w-130 xl:w-160">
-                            <Image
-                                src="/images/about.png"
-                                alt="about"
-                                fill
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                className="object-contain"
-                                priority
-                            />
-                        </div>
-                    </ScrollReveal>
-                </div>
+                        <a href="/pets" className="btn">
+                            View More
+                        </a>
+                    </div>
 
-                {/* Review*/}
-                <div id="reviews" className="flex flex-col gap-6 px-4 sm:gap-8">
-                    <ScrollReveal direction="fade" duration={1000}>
-                        <div className="section-header">
-                            <div className="section-title text-4xl sm:text-5xl lg:text-6xl">
-                                <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
-                                <h1>REVIEWS</h1>
-                                <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
+                    {/* About*/}
+                    <div
+                        id="about"
+                        className="bg-tertiary-light my-64! flex w-full flex-col items-center justify-center gap-8 px-4 py-8 sm:gap-10 sm:px-8 md:flex-row lg:gap-12"
+                    >
+                        <ScrollReveal
+                            direction="fade"
+                            duration={1000}
+                            className="order-2 max-w-150 md:order-1 md:w-1/2"
+                        >
+                            <div className="section-header">
+                                <div className="section-title text-4xl sm:text-5xl lg:text-6xl">
+                                    <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
+                                    <h1>ABOUT</h1>
+                                    <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
+                                </div>
+                                <p className="max-w-125 text-lg leading-8 sm:text-xl">
+                                    We&apos;re more than just an adoption
+                                    center, we&apos;re a compassionate community
+                                    built on love, care, and second chances.
+                                    Together, we create a space where people and
+                                    pets can connect, heal, and grow as family.
+                                </p>
+                                <button
+                                    onClick={() => scrollToSection('reviews')}
+                                    className="btn"
+                                >
+                                    Check Reviews
+                                </button>
                             </div>
-                            <p className="w-[18.75rem] text-base sm:w-[31.25rem] sm:text-lg">
-                                Every adoption creates a story worth sharing.
-                                Here are a few of our favorites.
-                            </p>
-                        </div>
-                    </ScrollReveal>
-                    <ScrollReveal direction="fade" duration={1000}>
-                        <div className="flex w-screen flex-col gap-8 overflow-hidden pb-8 sm:gap-12 sm:pb-12 xl:max-w-381">
-                            {/* First row - scrolls left */}
-                            <div className="carousel-row">
-                                <div className="carousel-left flex gap-4 sm:gap-8">
-                                    {reviews.slice(0, 5).map((review) => (
-                                        <ReviewCard
-                                            key={review.id}
-                                            review={review}
-                                        />
-                                    ))}
-                                    {reviews.slice(0, 5).map((review) => (
-                                        <ReviewCard
-                                            key={`dup-1-${review.id}`}
-                                            review={review}
-                                        />
-                                    ))}
-                                    {reviews.slice(0, 5).map((review) => (
-                                        <ReviewCard
-                                            key={`dup-2-${review.id}`}
-                                            review={review}
-                                        />
-                                    ))}
+                        </ScrollReveal>
+                        <ScrollReveal
+                            direction="fade"
+                            duration={1000}
+                            className="order-1 flex w-full max-w-150 items-center justify-center md:order-2 md:w-1/2"
+                        >
+                            <div className="relative mx-auto h-72 w-72 sm:h-120 sm:w-120 md:h-160 md:w-full">
+                                <Image
+                                    src="/images/about.png"
+                                    alt="about"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    className="object-contain"
+                                    priority
+                                />
+                            </div>
+                        </ScrollReveal>
+                    </div>
+
+                    {/* Review*/}
+                    <div
+                        id="reviews"
+                        className="mb-64! flex flex-col gap-6 px-4 sm:gap-8"
+                    >
+                        <ScrollReveal direction="fade" duration={1000}>
+                            <div className="section-header">
+                                <div className="section-title text-4xl sm:text-5xl lg:text-6xl">
+                                    <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
+                                    <h1>REVIEWS</h1>
+                                    <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
+                                </div>
+                                <p className="max-w-100 text-lg leading-8">
+                                    Every adoption creates a story worth
+                                    sharing. Here are a few of our favorites.
+                                </p>
+                            </div>
+                        </ScrollReveal>
+                        <ScrollReveal direction="fade" duration={1000}>
+                            <div className="flex w-full max-w-480 flex-col gap-8 overflow-hidden pb-8 sm:gap-12 sm:pb-12">
+                                {/* First row - scrolls left */}
+                                <div className="carousel-row">
+                                    <div className="carousel-left flex gap-4 sm:gap-8">
+                                        {reviews.slice(0, 5).map((review) => (
+                                            <ReviewCard
+                                                key={review.id}
+                                                review={review}
+                                            />
+                                        ))}
+                                        {reviews.slice(0, 5).map((review) => (
+                                            <ReviewCard
+                                                key={`dup-1-${review.id}`}
+                                                review={review}
+                                            />
+                                        ))}
+                                        {reviews.slice(0, 5).map((review) => (
+                                            <ReviewCard
+                                                key={`dup-2-${review.id}`}
+                                                review={review}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                                {/* Second row - scrolls right */}
+                                <div className="carousel-row">
+                                    <div className="carousel-right flex gap-4 sm:gap-8">
+                                        {reviews.slice(5, 10).map((review) => (
+                                            <ReviewCard
+                                                key={review.id}
+                                                review={review}
+                                            />
+                                        ))}
+                                        {reviews.slice(5, 10).map((review) => (
+                                            <ReviewCard
+                                                key={`dup-1-${review.id}`}
+                                                review={review}
+                                            />
+                                        ))}
+                                        {reviews.slice(5, 10).map((review) => (
+                                            <ReviewCard
+                                                key={`dup-2-${review.id}`}
+                                                review={review}
+                                            />
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                            {/* Second row - scrolls right */}
-                            <div className="carousel-row">
-                                <div className="carousel-right flex gap-4 sm:gap-8">
-                                    {reviews.slice(5, 10).map((review) => (
-                                        <ReviewCard
-                                            key={review.id}
-                                            review={review}
-                                        />
-                                    ))}
-                                    {reviews.slice(5, 10).map((review) => (
-                                        <ReviewCard
-                                            key={`dup-1-${review.id}`}
-                                            review={review}
-                                        />
-                                    ))}
-                                    {reviews.slice(5, 10).map((review) => (
-                                        <ReviewCard
-                                            key={`dup-2-${review.id}`}
-                                            review={review}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </ScrollReveal>
-                </div>
+                        </ScrollReveal>
+                    </div>
 
-                {/*Review*/}
-                <div className="bg-tertiary-light relative flex w-full flex-row items-center justify-center gap-12 px-4 py-12 sm:px-8 sm:py-16 lg:py-20 xl:p-40 xl:pt-48">
-                    <div className="text-brown-col absolute bottom-20 left-12 hidden sm:bottom-28 sm:left-24 xl:block">
-                        <IoPaw className="h-16 w-16 rotate-320 sm:h-20 sm:w-20" />
-                        <IoPaw className="h-28 w-28 rotate-45 sm:h-36 sm:w-36" />
-                    </div>
-                    <ScrollReveal direction="fade" duration={1000}>
-                        <div className="flex w-full flex-col items-center justify-center gap-3 sm:gap-4">
-                            <h1 className="text-center text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl">
-                                Let's Celebrate Happy Tails Together!
-                            </h1>
-                            <p className="w-full px-4 text-center text-sm sm:text-base md:text-lg lg:w-240 lg:px-0 lg:text-xl">
-                                Every adoption story is special. By sharing your
-                                experience, you help future adopters understand
-                                the joy and fulfillment that comes with giving a
-                                pet a second chance. Let your story be the
-                                reason someone else chooses to adopt, not shop!
-                            </p>
-                            <button
-                                onClick={() => setOpenReviewModal(true)}
-                                className="btn w-fit"
-                            >
-                                Leave A Review
-                            </button>
+                    {/*Review*/}
+                    <div className="bg-tertiary-light relative flex w-full flex-row items-center justify-center gap-12 px-4 py-12 sm:px-8 sm:py-16 lg:py-20 xl:p-40 xl:pt-48">
+                        <div className="text-brown-col absolute bottom-20 left-12 hidden sm:bottom-28 sm:left-24 xl:block">
+                            <IoPaw className="h-16 w-16 rotate-320 sm:h-20 sm:w-20" />
+                            <IoPaw className="h-28 w-28 rotate-45 sm:h-36 sm:w-36" />
                         </div>
-                    </ScrollReveal>
-                    <div className="text-brown-col absolute top-12 right-12 hidden sm:top-20 sm:right-20 xl:block">
-                        <IoPaw className="h-28 w-28 rotate-45 sm:h-36 sm:w-36" />
-                        <IoPaw className="h-16 w-16 rotate-320 sm:h-20 sm:w-20" />
+                        <ScrollReveal direction="fade" duration={1000}>
+                            <div className="flex w-full flex-col items-center justify-center gap-6">
+                                <h1 className="text-center text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl">
+                                    Let&apos;s Celebrate Happy Tails Together!
+                                </h1>
+                                <p className="w-full max-w-240 px-4 text-center text-lg leading-8 sm:text-xl">
+                                    Every adoption story is special. By sharing
+                                    your experience, you help future adopters
+                                    understand the joy and fulfillment that
+                                    comes with giving a pet a second chance. Let
+                                    your story be the reason someone else
+                                    chooses to adopt, not shop!
+                                </p>
+                                <button
+                                    onClick={() => setOpenReviewModal(true)}
+                                    className="btn w-fit"
+                                >
+                                    Leave A Review
+                                </button>
+                            </div>
+                        </ScrollReveal>
+                        <div className="text-brown-col absolute top-12 right-12 hidden sm:top-20 sm:right-20 xl:block">
+                            <IoPaw className="h-28 w-28 rotate-45 sm:h-36 sm:w-36" />
+                            <IoPaw className="h-16 w-16 rotate-320 sm:h-20 sm:w-20" />
+                        </div>
                     </div>
-                </div>
-            </main>
+                </main>
+            </div>
             <footer className="right-0 bottom-0 left-0 z-50 flex w-full flex-row items-center justify-between bg-white/50 px-2 py-2 backdrop-blur-sm sm:px-4 sm:py-3">
                 <div
-                    className="flex w-28 flex-row items-center gap-1 hover:cursor-pointer sm:w-44 sm:gap-2"
+                    className="group flex w-28 flex-row items-center gap-1 transition-colors duration-300 ease-in-out hover:cursor-pointer sm:w-44 sm:gap-2"
                     onClick={scrollToTop}
                 >
-                    <IoPaw className="text-main-black h-6 w-6 p-1 sm:h-8 sm:w-8" />
-                    <p className="text-sm font-bold sm:text-xl">FurEverHome</p>
+                    <IoPaw className="text-main-black group-hover:text-secondary-accent! h-6 w-6 p-1 transition-colors duration-500 ease-out sm:h-8 sm:w-8" />
+                    <p className="group-hover:text-secondary-accent! font-bold transition-colors duration-500 ease-out sm:text-xl">
+                        FurEverHome
+                    </p>
                 </div>
-                <p className="text-right text-xs font-medium sm:text-base">
+                <p className="text-right font-medium">
                     © 2025 FurEverHome | All rights reserved.
                 </p>
             </footer>
@@ -702,7 +719,7 @@ export default function Home() {
 
             {openThankYouModal && (
                 <>
-                    <div className="pointer-events-none fixed inset-0 z-[9999]">
+                    <div className="pointer-events-none fixed inset-0 z-9999">
                         <ConfettiFireworks />
                     </div>
                     <ThankYouModal

@@ -212,9 +212,10 @@ h1, h2, h3, h4, h5, h6 {
   position: fixed;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
   z-index: 1000;
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn 0.35s ease-out;
 }
 
 .pet-modal-container {
@@ -222,11 +223,12 @@ h1, h2, h3, h4, h5, h6 {
   padding: 1.5rem;
   border-radius: 1.5rem;
   background-color: #FFFFFF;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16);
   border: 0.188rem solid #e5e7eb;
   justify-self: center;
   align-self: center;
-  animation: modalSlideUp 0.3s ease-out;
+  transform-origin: center;
+  animation: modalSlideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .modal-container {
@@ -236,14 +238,15 @@ h1, h2, h3, h4, h5, h6 {
   padding: 1.5rem;
   border-radius: 1.5rem;
   background-color: #FFFFFF;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16);
   border: 0.188rem solid #e5e7eb;
   width: 26.5rem;
   max-width: 26.5rem;
   min-width: 20rem;
   justify-self: center;
   align-self: center;
-  animation: modalSlideUp 0.3s ease-out;
+  transform-origin: center;
+  animation: modalSlideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .modal-header {
@@ -255,11 +258,12 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--color-main-black);
     cursor: pointer;
     border-radius: 0.5rem;
+    transition: all 0.25s ease;
   }
 
   .close-btn:hover {
-    background-color: #f0f0f0;
-    scale: 1.05;
+    background-color: #f3f4f6;
+    scale: 1.08;
   }
 
   button {
@@ -282,10 +286,12 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 1.5rem;
     margin-top: 0.75rem;
     cursor: pointer;
+    transition: all 0.28s ease;
   }
 
   button:hover {
     background-color: var(--color-primary-accent);
+    transform: translateY(-1px);
   }
 }
 
@@ -319,6 +325,13 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0.5rem;
     font-size: 0.75rem;
     width: 100%;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  input:focus, textarea:focus {
+    border-color: var(--color-secondary-col);
+    box-shadow: 0 0 0 3px rgba(33, 160, 170, 0.18);
+    outline: none;
   }
 }
 
@@ -340,10 +353,13 @@ h1, h2, h3, h4, h5, h6 {
     cursor: pointer;
     padding: 0.25rem;
     border-radius: 0.5rem;
+    transition: color 0.25s ease, transform 0.25s ease, background-color 0.25s ease;
   }
 
   .icons:hover {
     color: var(--color-secondary-col);
+    background-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
   }
 }
 
@@ -354,10 +370,13 @@ h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
   border-radius: 0.5rem;
   color: var(--color-main-black);
+  transition: color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
 }
 
 .nav-item:hover {
   color: var(--color-secondary-accent);
+  background-color: rgba(16, 99, 101, 0.08);
+  transform: translateY(-1px);
 }
 
 /* Home CSS */
@@ -365,6 +384,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0.75rem;
   
   .section-title {
     display: flex;
