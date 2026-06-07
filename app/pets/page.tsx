@@ -66,7 +66,7 @@ export default function PetsPage() {
     // Data States
     const [pets, setPets] = useState<Pet[]>([]);
     const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
-    const [adoptedData, setAdoptedData] = useState<Adopt[]>([]);
+    const [_adoptedData, setAdoptedData] = useState<Adopt[]>([]);
 
     // Loading, Navigation, and Search States
     const [loading, setLoading] = useState(true);
