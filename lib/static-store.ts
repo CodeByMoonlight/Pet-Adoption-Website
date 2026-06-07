@@ -339,6 +339,42 @@ const createInitialReviews = (): ReviewRecord[] => [
         rating: 4,
         review: 'A clean interface and a fast adoption flow made everything simple.',
     },
+    {
+        id: 7,
+        createdAt: toIsoTime(18),
+        name: 'Grace Taylor',
+        petName: 'Charlie',
+        img: '/images/review-7.jpg',
+        rating: 5,
+        review: 'Charlie brought so much energy into our home right away.',
+    },
+    {
+        id: 8,
+        createdAt: toIsoTime(16),
+        name: 'Liam Johnson',
+        petName: 'Cleo',
+        img: '/images/review-8.jpg',
+        rating: 5,
+        review: 'Cleo has been calm, affectionate, and exactly what we hoped for.',
+    },
+    {
+        id: 9,
+        createdAt: toIsoTime(14),
+        name: 'Mia Santos',
+        petName: 'Rocky',
+        img: '/images/review-9.jpg',
+        rating: 4,
+        review: 'The adoption process felt easy and the team was very responsive.',
+    },
+    {
+        id: 10,
+        createdAt: toIsoTime(12),
+        name: 'Ethan Walker',
+        petName: 'Bella',
+        img: '/images/review-10.jpg',
+        rating: 5,
+        review: 'Bella settled in beautifully and loves our family routines.',
+    },
 ];
 
 const createInitialAdoptions = (): AdoptRecord[] => [];
