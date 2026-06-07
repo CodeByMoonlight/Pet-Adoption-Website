@@ -66,7 +66,7 @@ export default function Home() {
     const [pets, setPets] = useState<Pet[]>([]);
     const [reviews, setReviews] = useState<Review[]>([]);
     const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
-    const [adoptedData, setAdoptedData] = useState<Adopt[]>([]);
+    const [_adoptedData, setAdoptedData] = useState<Adopt[]>([]);
 
     // Loading and Navbar States
     const [loading, setLoading] = useState(true);

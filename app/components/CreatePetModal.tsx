@@ -3,6 +3,7 @@
 import { IoIosClose } from 'react-icons/io';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { useState } from 'react';
+import Image from 'next/image';
 
 type CreateModalProps = {
     onClose?: () => void;
@@ -156,7 +157,7 @@ export default function CreatePetModal({
                 </div>
                 <div>
                     <form
-                        className="modal-form h-[372px] overflow-y-auto"
+                        className="modal-form h-93 overflow-y-auto"
                         onSubmit={handleSubmit}
                     >
                         <div className="input-group-div">
@@ -245,7 +246,7 @@ export default function CreatePetModal({
                             >
                                 {imagePreview ? (
                                     <div className="relative h-full w-full">
-                                        <img
+                                        <Image
                                             src={imagePreview}
                                             alt="Preview"
                                             className="h-full w-full rounded-lg object-cover"
