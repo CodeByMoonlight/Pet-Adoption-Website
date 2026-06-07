@@ -18,7 +18,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 // Types
-import { Adopt } from '@prisma/client';
+// import { Adopt } from '@prisma/client';
 
 // Icons
 import { IoIosArrowRoundBack } from 'react-icons/io';
@@ -40,6 +40,17 @@ type Pet = {
     primaryCol: string;
     accentCol: string;
     isLiked?: boolean;
+};
+
+type Adopt = {
+    id: number;
+    petId: number;
+    name: string;
+    address: string;
+    email: string;
+    phoneNo: string;
+    reason: string;
+    createdAt: string;
 };
 
 export default function PetsPage() {
