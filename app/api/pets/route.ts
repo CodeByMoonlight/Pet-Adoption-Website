@@ -1,3 +1,8 @@
+import { NextResponse } from "next/server";
+
+export async function GET() {
+  return NextResponse.json({ message: "ok" });
+}
 // import { NextRequest, NextResponse } from 'next/server';
 // // import { prisma } from '@/lib/prisma';
 // // import { Prisma } from '@prisma/client';
