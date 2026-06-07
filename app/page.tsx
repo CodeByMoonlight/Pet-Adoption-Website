@@ -19,7 +19,7 @@ import ScrollReveal from './components/ScrollReveal';
 import { useEffect, useState } from 'react';
 
 // Types
-import { Adopt } from '@prisma/client';
+// import { Adopt } from '@prisma/client';
 
 // Icons
 import { IoPaw } from 'react-icons/io5';
@@ -50,6 +50,17 @@ type Review = {
     img: string;
     rating: number;
     review: string;
+};
+
+type Adopt = {
+    id: number;
+    petId: number;
+    name: string;
+    address: string;
+    email: string;
+    phoneNo: string;
+    reason: string;
+    createdAt: string;
 };
 
 export default function Home() {
