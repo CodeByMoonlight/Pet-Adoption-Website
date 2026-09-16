@@ -215,17 +215,17 @@ export default function PetsPage() {
     if (loading) return <div></div>;
 
     return (
-        <div className="grid grid-cols-[1fr_minmax(2rem,86rem)_1fr] gap-12 pt-12 pb-12">
+        <div className="grid grid-cols-[1fr_minmax(2rem,86rem)_1fr] pt-12 pb-12">
             {showLoading && (
                 <Loading
                     isDataLoading={loading}
                     onComplete={handleLoadingComplete}
                 />
             )}
-            <div className="b col-start-2 col-end-3 flex w-full flex-col items-center justify-between gap-3 sm:flex-row sm:gap-0">
+            <div className="col-start-2 col-end-3 flex w-full flex-col items-center justify-between gap-3 sm:flex-row sm:gap-0">
                 <div className="flex flex-row items-center justify-center gap-2">
                     <Link href="/">
-                        <IoIosArrowRoundBack className="h-12 w-12 cursor-pointer hover:scale-110" />
+                        <IoIosArrowRoundBack className="h-10 w-10 cursor-pointer hover:scale-110 md:h-12 md:w-12" />
                     </Link>
                     <h1 className="text-4xl font-bold lg:text-5xl">
                         ADOPT A PET
@@ -255,7 +255,7 @@ export default function PetsPage() {
                     )}
                 </div>
             </div>
-            <div className="col-start-2 col-end-3 flex flex-wrap justify-center gap-8">
+            <div className="col-start-2 col-end-3 flex flex-wrap justify-center gap-8 pt-8">
                 {currentPets.length > 0 ? (
                     currentPets.map((pet) => (
                         <PetCard

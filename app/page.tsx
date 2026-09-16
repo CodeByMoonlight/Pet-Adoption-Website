@@ -513,9 +513,15 @@ export default function Home() {
                                 </ScrollReveal>
                             ))}
                         </div>
-                        <a href="/pets" className="btn">
-                            View More
-                        </a>
+                        <ScrollReveal
+                            direction="fade"
+                            duration={1000}
+                            className="mt-6!"
+                        >
+                            <a href="/pets" className="btn">
+                                View More
+                            </a>
+                        </ScrollReveal>
                     </div>
 
                     {/* About*/}
@@ -579,7 +585,7 @@ export default function Home() {
                                     <h1>REVIEWS</h1>
                                     <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
                                 </div>
-                                <p className="max-w-100 text-base leading-7 md:text-lg md:leading-8">
+                                <p className="max-w-72 text-base leading-7 sm:max-w-100 md:text-lg md:leading-8">
                                     Every adoption creates a story worth
                                     sharing. Here are a few of our favorites.
                                 </p>
