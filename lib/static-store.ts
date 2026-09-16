@@ -88,7 +88,7 @@ const createInitialPets = (): PetRecord[] => [
         age: 4,
         location: 'San Francisco, CA',
         description:
-            'Luna is a calm Persian cat who loves sunny windows and gentle company.',
+            'Luna is a calm Persian cat who loves sunny windows and gentle company. She settles in beautifully, enjoys quiet routines, and brings a soothing presence to any home.',
         image: '/images/cat-1.png',
         traits: 'Calm,Gentle,Affectionate,Quiet,Indoor,Loyal,Observant,Soft-hearted',
         primaryCol: '#542C96',
@@ -105,7 +105,7 @@ const createInitialPets = (): PetRecord[] => [
         age: 2,
         location: 'Austin, TX',
         description:
-            'Milo is playful, curious, and happiest when he can follow you from room to room.',
+            'Milo is playful, curious, and happiest when he can follow you from room to room. He stays close, keeps things lively, and adds a fun, social energy to the home.',
         image: '/images/cat-2.png',
         traits: 'Playful,Curious,Intelligent,Social,Energetic,Vocal,Loyal,Adventurous',
         primaryCol: '#43597F',
@@ -122,7 +122,7 @@ const createInitialPets = (): PetRecord[] => [
         age: 5,
         location: 'Portland, OR',
         description:
-            'Cleo is a gentle Maine Coon with a fluffy tail and a big heart.',
+            'Cleo is a gentle Maine Coon with a fluffy tail and a big heart. She warms up quickly, enjoys soft affection, and makes every space feel a little calmer.',
         image: '/images/cat-3.png',
         traits: 'Loyal,Gentle,Patient,Calm,Affectionate,Independent,Graceful,Intelligent',
         primaryCol: '#5D4E04',
@@ -139,7 +139,7 @@ const createInitialPets = (): PetRecord[] => [
         age: 3,
         location: 'Chicago, IL',
         description:
-            'Oliver has a calm personality and enjoys quiet afternoons near his people.',
+            'Oliver has a calm personality and enjoys quiet afternoons near his people. He is steady, observant, and happiest when he can relax beside someone he trusts.',
         image: '/images/cat-4.png',
         traits: 'Calm,Composed,Quiet,Observant,Independent,Affectionate,Patient,Clean',
         primaryCol: '#304F38',
@@ -156,7 +156,7 @@ const createInitialPets = (): PetRecord[] => [
         age: 2,
         location: 'Seattle, WA',
         description:
-            'Nala is energetic, confident, and always ready for an adventure.',
+            'Nala is energetic, confident, and always ready for an adventure. She brings spark, curiosity, and a bold personality to every corner of the house.',
         image: '/images/cat-5.png',
         traits: 'Energetic,Confident,Curious,Playful,Agile,Social,Smart,Adventurous',
         primaryCol: '#87320D',
@@ -173,7 +173,7 @@ const createInitialPets = (): PetRecord[] => [
         age: 5,
         location: 'Denver, CO',
         description:
-            'Max is a cheerful Golden Retriever who loves meeting new friends and going outside.',
+            'Max is a cheerful Golden Retriever who loves meeting new friends and going outside. He is affectionate, easy to love, and thrives with an active family.',
         image: '/images/dog-1.png',
         traits: 'Friendly,Loyal,Playful,Gentle,Affectionate,Obedient,Patient,Outgoing',
         primaryCol: '#324E58',
@@ -190,7 +190,7 @@ const createInitialPets = (): PetRecord[] => [
         age: 4,
         location: 'Atlanta, GA',
         description:
-            'Bella loves swimming, long walks, and being part of family life.',
+            'Bella loves swimming, long walks, and being part of family life. She is loyal, warm, and happiest when she can join in on everyday routines.',
         image: '/images/dog-2.png',
         traits: 'Affectionate,Energetic,Loyal,Smart,Social,Obedient,Playful,Kind',
         primaryCol: '#473A5A',
@@ -207,7 +207,7 @@ const createInitialPets = (): PetRecord[] => [
         age: 6,
         location: 'Dallas, TX',
         description:
-            'Rocky is disciplined, intelligent, and deeply loyal to the people he trusts.',
+            'Rocky is disciplined, intelligent, and deeply loyal to the people he trusts. He is protective, focused, and becomes a steady companion once he feels at home.',
         image: '/images/dog-3.png',
         traits: 'Loyal,Protective,Smart,Brave,Strong,Obedient,Focused,Trustworthy',
         primaryCol: '#940A23',
@@ -224,7 +224,7 @@ const createInitialPets = (): PetRecord[] => [
         age: 3,
         location: 'Orlando, FL',
         description:
-            'Daisy is curious, cheerful, and always ready to explore the next scent trail.',
+            'Daisy is curious, cheerful, and always ready to explore the next scent trail. She keeps life fun, stays engaged, and loves being part of a busy household.',
         image: '/images/dog-4.png',
         traits: 'Curious,Playful,Happy,Social,Lively,Intelligent,Friendly,Active',
         primaryCol: '#684D08',
@@ -241,7 +241,7 @@ const createInitialPets = (): PetRecord[] => [
         age: 2,
         location: 'Boston, MA',
         description:
-            'Charlie is an outgoing Corgi with a big personality and a love for playtime.',
+            'Charlie is an outgoing Corgi with a big personality and a love for playtime. He is funny, affectionate, and brings a bright spark to every room.',
         image: '/images/dog-5.png',
         traits: 'Playful,Loyal,Funny,Outgoing,Smart,Cheerful,Brave,Affectionate',
         primaryCol: '#8A0A0A',
@@ -258,7 +258,7 @@ const createInitialPets = (): PetRecord[] => [
         age: 3,
         location: 'Los Angeles, CA',
         description:
-            'Mochi loves soft pillows, feather toys, and cozy naps near his favorite human.',
+            'Mochi loves soft pillows, feather toys, and cozy naps near his favorite human. He is affectionate, relaxed, and brings a gentle, comforting presence.',
         image: '/images/cat-6.png',
         traits: 'Playful,Loyal,Curious,Affectionate,Quiet,Indoor,Laid-back,Gentle',
         primaryCol: '#4A443F',
@@ -275,7 +275,7 @@ const createInitialPets = (): PetRecord[] => [
         age: 1,
         location: 'New York, NY',
         description:
-            'Oreo is curious, energetic, and always ready to explore a new space.',
+            'Oreo is curious, energetic, and always ready to explore a new space. He is playful, brave, and quickly turns unfamiliar places into his own playground.',
         image: '/images/cat-10.png',
         traits: 'Energetic,Curious,Playful,Cheerful,Brave,Loyal,Smart,Fun-loving',
         primaryCol: '#94001B',

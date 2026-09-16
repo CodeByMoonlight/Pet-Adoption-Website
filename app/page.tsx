@@ -279,7 +279,7 @@ export default function Home() {
                 </div>
 
                 {/* Desktop Navigation */}
-                <div className="hidden flex-row gap-8 text-base md:flex">
+                <div className="hidden flex-row gap-4 text-base md:flex lg:gap-8">
                     <div
                         className={`nav-item ${activeSection === 'home' ? 'text-secondary-accent! font-bold' : ''}`}
                         onClick={() => scrollToSection('home')}
@@ -440,7 +440,7 @@ export default function Home() {
                                             <IoPaw className="text-main-black mt-2! h-6 w-6 rotate-36 sm:h-8 sm:w-8" />
                                         </span>
                                     </h1>
-                                    <p className="text-base leading-relaxed md:text-lg lg:text-xl lg:leading-9">
+                                    <p className="text-base leading-7 md:text-lg lg:text-xl lg:leading-9">
                                         Behind every pair of hopeful eyes is a
                                         story ready to change your life.
                                         Discover pets looking for love and make
@@ -481,7 +481,7 @@ export default function Home() {
                                     <h1>PETS</h1>
                                     <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
                                 </div>
-                                <p className="max-w-140 text-lg leading-8 sm:text-xl">
+                                <p className="max-w-140 text-base leading-7 md:text-lg md:leading-8">
                                     Meet our wonderful pets! Each one has a
                                     unique charm and is ready to bring joy,
                                     warmth, and companionship into your life.
@@ -534,7 +534,7 @@ export default function Home() {
                                     <h1>ABOUT</h1>
                                     <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
                                 </div>
-                                <p className="max-w-125 text-lg leading-8 sm:text-xl">
+                                <p className="max-w-125 text-base leading-7 md:text-lg md:leading-8">
                                     We&apos;re more than just an adoption
                                     center, we&apos;re a compassionate community
                                     built on love, care, and second chances.
@@ -579,7 +579,7 @@ export default function Home() {
                                     <h1>REVIEWS</h1>
                                     <IoPaw className="icons h-10 w-10 sm:h-12 sm:w-12" />
                                 </div>
-                                <p className="max-w-100 text-lg leading-8">
+                                <p className="max-w-100 text-base leading-7 md:text-lg md:leading-8">
                                     Every adoption creates a story worth
                                     sharing. Here are a few of our favorites.
                                 </p>
@@ -645,10 +645,10 @@ export default function Home() {
                         </div>
                         <ScrollReveal direction="fade" duration={1000}>
                             <div className="flex w-full flex-col items-center justify-center gap-6">
-                                <h1 className="text-center text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl">
+                                <h1 className="text-center text-4xl leading-12 font-bold md:text-5xl md:leading-16 lg:text-6xl">
                                     Let&apos;s Celebrate Happy Tails Together!
                                 </h1>
-                                <p className="w-full max-w-240 px-4 text-center text-lg leading-8 sm:text-xl">
+                                <p className="w-full max-w-240 px-4 text-center text-lg leading-8 sm:text-xl md:leading-9">
                                     Every adoption story is special. By sharing
                                     your experience, you help future adopters
                                     understand the joy and fulfillment that
@@ -682,7 +682,10 @@ export default function Home() {
                     </p>
                 </div>
                 <p className="text-right font-medium">
-                    © 2025 FurEverHome | All rights reserved.
+                    <span className="sm:hidden">© 2025 FurEverHome</span>
+                    <span className="hidden sm:block">
+                        © 2025 FurEverHome | All rights reserved.
+                    </span>
                 </p>
             </footer>
 

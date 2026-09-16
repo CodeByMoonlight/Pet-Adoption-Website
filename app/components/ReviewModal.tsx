@@ -3,6 +3,7 @@
 import { IoIosClose } from 'react-icons/io';
 import { FaStar } from 'react-icons/fa';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 type ReviewModalProps = {
     onClose?: () => void;
@@ -48,42 +49,12 @@ export default function ReviewModal({ onClose }: ReviewModalProps) {
         setIsSubmitting(true);
 
         try {
-            let response;
-
-            // If a file was selected, send as FormData
-            if (selectedFile) {
-                const formDataUpload = new FormData();
-
-                formDataUpload.append('file', selectedFile);
-                formDataUpload.append('name', formData.name);
-                formDataUpload.append('petName', formData.petName);
-                formDataUpload.append('rating', rating.toString());
-                formDataUpload.append('review', formData.review);
-
-                response = await fetch('/api/reviews', {
-                    method: 'POST',
-                    body: formDataUpload,
-                });
-            } else {
-                // Send as JSON if no file
-                response = await fetch('/api/reviews', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        ...formData,
-                        rating: rating,
-                    }),
-                });
-            }
-
-            if (response.ok) {
-                console.log('Review created successfully!');
-                handleClose();
-            } else {
-                console.error('Failed to create review');
-            }
+            //Removed for demo purposes.
+            toast.info(
+                'This is a live demo — submission is disabled for visitors.',
+                { position: 'top-right' },
+            );
+            handleClose();
         } catch (error) {
             console.error('Error creating review:', error);
         } finally {

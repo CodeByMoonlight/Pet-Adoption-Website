@@ -25,6 +25,7 @@ import { IoIosArrowRoundBack } from 'react-icons/io';
 import { FiSearch } from 'react-icons/fi';
 import { FaPlus } from 'react-icons/fa6';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
+import { toast } from 'sonner';
 
 type Pet = {
     id: number;
@@ -144,20 +145,11 @@ export default function PetsPage() {
         refreshPets(); // Refresh the pets list to remove the adopted pet
     };
 
-    const handlePetDelete = async (petId: number, petName: string) => {
-        const confirmed = window.confirm(
-            `Are you sure you want to delete ${petName}? This action cannot be undone.`,
-        );
-        if (confirmed) {
-            await fetch('/api/pets', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: petId }),
-            });
-            refreshPets();
-        }
+    const handlePetDelete = async () => {
+        // Delete is removed for demo purposes.
+        toast.info('This is a live demo — deletion is disabled for visitors.', {
+            position: 'top-right',
+        });
     };
 
     const filteredPets = pets.filter(
@@ -277,7 +269,7 @@ export default function PetsPage() {
                                 setSelectedPet(pet);
                                 setOpenUpdatePetModal(true);
                             }}
-                            onDelete={() => handlePetDelete(pet.id, pet.name)}
+                            onDelete={() => handlePetDelete()}
                         />
                     ))
                 ) : (

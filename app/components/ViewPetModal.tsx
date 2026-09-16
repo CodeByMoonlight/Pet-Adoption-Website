@@ -4,7 +4,16 @@ import { IoIosClose } from 'react-icons/io';
 import Image from 'next/image';
 import { AiFillHeart } from 'react-icons/ai';
 import { AiOutlineHeart } from 'react-icons/ai';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 
 // Utility function to format age from months
 const formatAge = (ageInMonths: number): string => {
@@ -52,6 +61,8 @@ export default function ViewPetModal({
     // States for like button
     const [isLiked, setIsLiked] = useState(pet.isLiked || false);
     const [isHovered, setIsHovered] = useState(false);
+    const [open, setOpen] = useState(true);
+    const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Effects //
     // Reset isLiked when pet changes
@@ -98,6 +109,20 @@ export default function ViewPetModal({
         }
     };
 
+    const handleOpenChange = (nextOpen: boolean) => {
+        setOpen(nextOpen);
+
+        if (!nextOpen) {
+            if (closeTimerRef.current) {
+                clearTimeout(closeTimerRef.current);
+            }
+
+            closeTimerRef.current = setTimeout(() => {
+                onClose?.();
+            }, 200);
+        }
+    };
+
     // Parse traits into array
     const traits: string[] = Array.isArray(pet.traits)
         ? pet.traits
@@ -109,23 +134,23 @@ export default function ViewPetModal({
           : [];
 
     return (
-        <div className="modal" onClick={handleClose}>
-            <div
-                className="pet-modal-container w-[26.5rem] max-w-[26.5rem] min-w-[20rem] flex-col gap-4 lg:w-[45rem] lg:max-w-[45rem] lg:min-w-[20rem] lg:flex-row lg:gap-6"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className="relative h-52 w-full overflow-hidden rounded-lg px-36 lg:h-auto lg:w-2/5">
-                    <Image
-                        src={pet.image}
-                        alt={pet.name}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-cover object-center"
-                        priority
-                    />
-                </div>
-                <div className="flex w-full flex-col gap-4 lg:w-3/5">
-                    <div className="modal-header">
+        <div>
+            <Dialog open={open} onOpenChange={handleOpenChange}>
+                <DialogContent
+                    className="pet-modal-container max-w-106 flex-col gap-4 lg:w-180 lg:max-w-180 lg:min-w-[20rem] lg:flex-row lg:gap-6"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="relative h-52 w-full min-w-0 overflow-hidden rounded-lg lg:h-auto lg:w-2/5">
+                        <Image
+                            src={pet.image}
+                            alt={pet.name}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="object-cover object-center"
+                            priority
+                        />
+                    </div>
+                    <div className="flex w-full min-w-0 flex-col gap-4 lg:flex-1">
                         <div>
                             <div className="flex flex-row items-center gap-2">
                                 <h1 className="pb-1 text-4xl font-bold">
@@ -155,46 +180,47 @@ export default function ViewPetModal({
                                 <span>{pet.location}</span>
                             </div>
                         </div>
-                        <button className="" onClick={handleClose}>
-                            <IoIosClose className="close-btn h-8 w-8" />
-                        </button>
-                    </div>
-                    <div className="flex flex-col gap-4">
-                        <div className="flex flex-col gap-1">
-                            <h2 className="text-xl font-bold">ABOUT</h2>
-                            <p className="text-base leading-normal">
-                                {pet.description}
-                            </p>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <h2 className="text-xl font-bold">PERSONALITY</h2>
-                            <div className="flex flex-wrap gap-2">
-                                {traits.map((trait, index) => (
-                                    <span
-                                        key={`${trait}-${index}`}
-                                        className="rounded-full px-3 py-2 text-xs"
-                                        style={{
-                                            backgroundColor: pet.accentCol,
-                                            color: pet.primaryCol,
-                                        }}
-                                    >
-                                        {trait}
-                                    </span>
-                                ))}
+
+                        <div className="flex flex-col gap-4">
+                            <div className="flex flex-col gap-1">
+                                <h2 className="text-sm font-semibold tracking-wider">
+                                    ABOUT
+                                </h2>
+                                <p className="text-base leading-6.5">
+                                    {pet.description}
+                                </p>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <h2 className="text-sm font-semibold tracking-wider">
+                                    PERSONALITY
+                                </h2>
+                                <div className="flex flex-wrap gap-2">
+                                    {traits.map((trait, index) => (
+                                        <Badge
+                                            key={`${trait}-${index}`}
+                                            style={{
+                                                backgroundColor: pet.accentCol,
+                                                color: pet.primaryCol,
+                                            }}
+                                        >
+                                            {trait}
+                                        </Badge>
+                                    ))}
+                                </div>
                             </div>
                         </div>
+                        <Button
+                            className="btn"
+                            onClick={() => {
+                                handleClose();
+                                onAdopt?.();
+                            }}
+                        >
+                            Adopt
+                        </Button>
                     </div>
-                    <button
-                        onClick={() => {
-                            handleClose();
-                            onAdopt?.();
-                        }}
-                        className="btn"
-                    >
-                        Adopt {pet.name}
-                    </button>
-                </div>
-            </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

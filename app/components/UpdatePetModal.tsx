@@ -1,8 +1,24 @@
 'use client';
 
-import { IoIosClose } from 'react-icons/io';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import {
+    InputGroup,
+    InputGroupInput,
+    InputGroupTextarea,
+} from '@/components/ui/input-group';
+import { Field, FieldLabel } from '@/components/ui/field';
 
 type Pet = {
     id: number;
@@ -33,8 +49,9 @@ export default function UpdatePetModal({
 }: UpdateModalProps) {
     // States for form handling
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [open, setOpen] = useState(true);
     const [imagePreview, setImagePreview] = useState<string>(pet.image);
+    const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [formData, setFormData] = useState({
         name: pet.name,
         breed: pet.breed,
@@ -48,6 +65,14 @@ export default function UpdatePetModal({
         description: pet.description,
         traits: pet.traits,
     });
+
+    useEffect(() => {
+        return () => {
+            if (closeTimerRef.current) {
+                clearTimeout(closeTimerRef.current);
+            }
+        };
+    }, []);
 
     //Functions
     // Functions for form handling
@@ -80,7 +105,6 @@ export default function UpdatePetModal({
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setSelectedFile(file);
             const reader = new FileReader();
             reader.onload = (e) => {
                 setImagePreview(e.target?.result as string);
@@ -101,51 +125,18 @@ export default function UpdatePetModal({
         setIsSubmitting(true);
 
         try {
-            let response;
-
-            // If a file was selected, send as FormData
-            if (selectedFile) {
-                const formDataUpload = new FormData();
-                formDataUpload.append('file', selectedFile);
-                formDataUpload.append('id', pet.id.toString());
-                formDataUpload.append('name', formData.name);
-                formDataUpload.append('breed', formData.breed);
-                formDataUpload.append('type', formData.type);
-                formDataUpload.append('sex', formData.sex);
-                formDataUpload.append('age', formData.age);
-                formDataUpload.append('location', formData.location);
-                formDataUpload.append('description', formData.description);
-                formDataUpload.append('traits', formData.traits);
-                formDataUpload.append('primaryCol', formData.primaryCol);
-                formDataUpload.append('accentCol', formData.accentCol);
-
-                response = await fetch('/api/pets', {
-                    method: 'PATCH',
-                    body: formDataUpload,
-                });
-            } else {
-                // Send as JSON if no file
-                response = await fetch('/api/pets', {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        id: pet.id,
-                        ...formData,
-                        age: parseInt(formData.age),
-                    }),
-                });
-            }
-
-            if (response.ok) {
-                console.log('Pet updated successfully!');
-                const updatedPet = await response.json();
-                onPetUpdate?.(updatedPet);
-                handleClose();
-            } else {
-                console.error('Failed to update pet');
-            }
+            // Edit is removed for demo purposes.
+            toast.info(
+                'This is a live demo — editing is disabled for visitors.',
+                { position: 'top-right' },
+            );
+            onPetUpdate?.({
+                ...pet,
+                ...formData,
+                age: Number(formData.age),
+                image: imagePreview,
+            });
+            setOpen(false);
         } catch (error) {
             console.error('Error updating pet:', error);
         } finally {
@@ -153,207 +144,255 @@ export default function UpdatePetModal({
         }
     };
 
-    // Close modal handler
-    const handleClose = () => {
-        onClose?.();
+    const handleOpenChange = (nextOpen: boolean) => {
+        setOpen(nextOpen);
+
+        if (!nextOpen) {
+            if (closeTimerRef.current) {
+                clearTimeout(closeTimerRef.current);
+            }
+
+            closeTimerRef.current = setTimeout(() => {
+                onClose?.();
+            }, 200);
+        }
     };
 
     return (
-        <div className="modal" onClick={handleClose}>
-            <div
-                className="modal-container"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className="modal-header">
-                    <div className="">
-                        <h1 className="pb-1 text-4xl font-bold">
-                            UPDATE RECORD
-                        </h1>
-                        <p className="text-sm">
-                            Modify details to reflect the latest information.
-                        </p>
-                    </div>
-                    <button className="" onClick={handleClose}>
-                        <IoIosClose className="close-btn h-8 w-8" />
-                    </button>
-                </div>
-                <div>
+        <div>
+            <Dialog open={open} onOpenChange={handleOpenChange}>
+                <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
+                    <DialogHeader className="text-left">
+                        <DialogTitle>Update Record</DialogTitle>
+                        <DialogDescription>
+                            Modify this pet&apos;s details using the fields
+                            below.
+                        </DialogDescription>
+                    </DialogHeader>
+
                     <form
-                        className="modal-form h-[372px] overflow-y-auto"
+                        className="flex flex-col gap-y-3"
                         onSubmit={handleSubmit}
                     >
-                        <div className="input-group-div">
-                            <div className="input-group">
-                                <label>Name</label>
-                                <input
-                                    className="input-field"
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter pet's name"
-                                    required
-                                />
+                        <div className="grid gap-4 md:grid-cols-2">
+                            <div className="flex flex-col justify-between gap-y-2">
+                                <Field>
+                                    <FieldLabel htmlFor="inline-end-input">
+                                        Pet&apos;s Image
+                                    </FieldLabel>
+                                    <button
+                                        type="button"
+                                        className="border-input bg-background hover:bg-accent flex h-46.5 w-full grow cursor-pointer items-center justify-center overflow-hidden rounded-md border border-dashed transition-colors"
+                                        onClick={handleImageContainerClick}
+                                    >
+                                        {imagePreview ? (
+                                            <div className="relative h-full w-full">
+                                                <Image
+                                                    src={imagePreview}
+                                                    alt="Preview"
+                                                    className="h-full w-full object-cover"
+                                                    fill
+                                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className="text-muted-foreground flex flex-col items-center gap-2 text-center">
+                                                <AiOutlineCloudUpload className="h-12 w-12" />
+                                                <span className="text-sm">
+                                                    Click to upload image
+                                                </span>
+                                            </div>
+                                        )}
+                                    </button>
+                                    <Input
+                                        id="file-input"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleFileChange}
+                                        className="hidden"
+                                    />
+                                </Field>
+
+                                <span className="grid grid-cols-2 gap-4">
+                                    <Field>
+                                        <FieldLabel htmlFor="inline-end-input">
+                                            Card Primary Color
+                                        </FieldLabel>
+                                        <InputGroup>
+                                            <InputGroupInput
+                                                id="primaryCol"
+                                                type="color"
+                                                name="primaryCol"
+                                                value={formData.primaryCol}
+                                                onChange={handleInputChange}
+                                                className="h-11 w-full p-1"
+                                            />
+                                        </InputGroup>
+                                    </Field>
+                                    <Field>
+                                        <FieldLabel htmlFor="inline-end-input">
+                                            Card Accent Color
+                                        </FieldLabel>
+                                        <InputGroup>
+                                            <InputGroupInput
+                                                id="accentCol"
+                                                type="color"
+                                                name="accentCol"
+                                                value={formData.accentCol}
+                                                onChange={handleInputChange}
+                                                className="h-11 w-full p-1"
+                                            />
+                                        </InputGroup>
+                                    </Field>
+                                </span>
                             </div>
-                            <div className="input-group">
-                                <label>Breed</label>
-                                <input
-                                    className="input-field"
-                                    type="text"
-                                    name="breed"
-                                    value={formData.breed}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter pet's breed"
-                                    required
-                                />
-                            </div>
-                        </div>
-                        <div className="input-group">
-                            <label>Location</label>
-                            <input
-                                className="input-field"
-                                type="text"
-                                name="location"
-                                value={formData.location}
-                                onChange={handleInputChange}
-                                placeholder="Enter pet's location"
-                                required
-                            />
-                        </div>
-                        <div className="input-group-div">
-                            <div className="input-group">
-                                <label>Sex</label>
-                                <input
-                                    className="input-field"
-                                    type="text"
-                                    name="sex"
-                                    value={formData.sex}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter pet's sex"
-                                    required
-                                />
-                            </div>
-                            <div className="input-group">
-                                <label>Age (in months)</label>
-                                <input
-                                    className="input-field"
-                                    type="number"
-                                    name="age"
-                                    value={formData.age}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter pet's age in months"
-                                    min="0"
-                                    max="360"
-                                    required
-                                />
-                            </div>
-                            <div className="input-group">
-                                <label>Type</label>
-                                <input
-                                    className="input-field"
-                                    type="text"
-                                    name="type"
-                                    value={formData.type}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter pet's type"
-                                    required
-                                />
-                            </div>
-                        </div>
-                        <div className="input-group">
-                            <label>Pet&apos;s Image</label>
-                            <div
-                                className="border-main-gray flex h-32 w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors hover:border-gray-400"
-                                onClick={handleImageContainerClick}
-                            >
-                                {imagePreview ? (
-                                    <div className="relative h-full w-full">
-                                        <img
-                                            src={imagePreview}
-                                            alt="Preview"
-                                            className="h-full w-full rounded-lg object-cover"
+
+                            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                                <Field>
+                                    <FieldLabel htmlFor="inline-end-input">
+                                        Name
+                                    </FieldLabel>
+                                    <InputGroup>
+                                        <InputGroupInput
+                                            id="name"
+                                            type="string"
+                                            placeholder="Enter pet's name"
+                                            value={formData.name}
+                                            onChange={handleInputChange}
+                                            required
                                         />
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center text-center">
-                                        <div className="text-gray-400">
-                                            <AiOutlineCloudUpload className="h-12 w-12" />
-                                        </div>
-                                        <div className="text-sm text-gray-500">
-                                            Click to upload image
-                                        </div>
-                                    </div>
-                                )}
+                                    </InputGroup>
+                                </Field>
+
+                                <Field>
+                                    <FieldLabel htmlFor="inline-end-input">
+                                        Breed
+                                    </FieldLabel>
+                                    <InputGroup>
+                                        <InputGroupInput
+                                            id="breed"
+                                            type="string"
+                                            placeholder="Enter pet's breed"
+                                            value={formData.breed}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </InputGroup>
+                                </Field>
+
+                                <Field className="col-span-2">
+                                    <FieldLabel htmlFor="inline-end-input">
+                                        Location
+                                    </FieldLabel>
+                                    <InputGroup>
+                                        <InputGroupInput
+                                            id="location"
+                                            type="string"
+                                            placeholder="Enter pet's location"
+                                            value={formData.location}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </InputGroup>
+                                </Field>
+
+                                <Field>
+                                    <FieldLabel htmlFor="sex">Sex</FieldLabel>
+                                    <InputGroup>
+                                        <InputGroupInput
+                                            id="sex"
+                                            type="string"
+                                            placeholder="Enter pet's sex"
+                                            value={formData.sex}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </InputGroup>
+                                </Field>
+
+                                <Field>
+                                    <FieldLabel htmlFor="inline-end-input">
+                                        Age (in months)
+                                    </FieldLabel>
+                                    <InputGroup>
+                                        <InputGroupInput
+                                            id="age"
+                                            type="number"
+                                            placeholder="Enter pet's age in months"
+                                            value={formData.age}
+                                            onChange={handleInputChange}
+                                            required
+                                            min="0"
+                                            max="360"
+                                        />
+                                    </InputGroup>
+                                </Field>
+
+                                <Field className="col-span-2">
+                                    <FieldLabel htmlFor="inline-end-input">
+                                        Type
+                                    </FieldLabel>
+                                    <InputGroup>
+                                        <InputGroupInput
+                                            id="type"
+                                            type="string"
+                                            placeholder="Enter pet's type"
+                                            value={formData.type}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </InputGroup>
+                                </Field>
                             </div>
-                            <input
-                                id="file-input"
-                                type="file"
-                                accept="image/*"
-                                onChange={handleFileChange}
-                                className="hidden"
-                            />
-                        </div>
-                        <div className="input-group-div">
-                            <div className="input-group">
-                                <label>Card Primary Color</label>
-                                <input
-                                    className="input-field h-12"
-                                    type="color"
-                                    name="primaryCol"
-                                    value={formData.primaryCol}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-                            <div className="input-group">
-                                <label>Card Accent Color</label>
-                                <input
-                                    className="input-field h-12"
-                                    type="color"
-                                    name="accentCol"
-                                    value={formData.accentCol}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-                        </div>
-                        <div className="input-group">
-                            <div className="flex flex-row items-center gap-2">
-                                <label>Personality</label>
-                                <div className="text-xs text-gray-400">
-                                    (Max: 12 Traits)
-                                </div>
-                            </div>
-                            <input
-                                className="input-field"
-                                name="traits"
-                                value={formData.traits}
-                                onChange={handleInputChange}
-                                placeholder="Enter pet's personality traits (comma-separated)..."
-                                required
-                            />
-                        </div>
-                        <div className="input-group">
-                            <div className="flex flex-row items-center gap-2">
-                                <label>Description</label>
-                                <div className="text-xs text-gray-400">
-                                    (Max: 320 characters)
-                                </div>
-                            </div>
-                            <textarea
-                                className="input-field"
-                                name="description"
-                                value={formData.description}
-                                onChange={handleInputChange}
-                                placeholder="Enter pet's description..."
-                                required
-                            />
                         </div>
 
-                        <button type="submit" disabled={isSubmitting}>
-                            {isSubmitting ? 'Updating...' : 'Update Record'}
-                        </button>
+                        <Field>
+                            <FieldLabel htmlFor="inline-end-input">
+                                Personality (Max 12 traits, separated by commas)
+                            </FieldLabel>
+                            <InputGroup>
+                                <InputGroupInput
+                                    id="traits"
+                                    type="string"
+                                    placeholder="Enter pet's personality traits, separated by commas"
+                                    value={formData.traits}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </InputGroup>
+                        </Field>
+
+                        <Field>
+                            <FieldLabel htmlFor="inline-end-input">
+                                Description (Max 320 characters)
+                            </FieldLabel>
+                            <InputGroup>
+                                <InputGroupTextarea
+                                    id="description"
+                                    placeholder="Enter pet's description"
+                                    value={formData.description}
+                                    onChange={handleInputChange}
+                                    className="min-h-28"
+                                    required
+                                />
+                            </InputGroup>
+                        </Field>
+
+                        <div className="flex justify-end gap-3 pt-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={isSubmitting}>
+                                {isSubmitting ? 'Updating...' : 'Update Record'}
+                            </Button>
+                        </div>
                     </form>
-                </div>
-            </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
